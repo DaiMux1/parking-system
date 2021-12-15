@@ -14,6 +14,12 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "about" */ "../views/Home.vue"),
     },
+    {
+        path: "/manage-account",
+        name: "ManageAccount",
+        component: () =>
+            import(/* webpackChunkName: "about" */ "../views/ManageAccount.vue"),
+    },
 ];
 
 const router = new VueRouter({

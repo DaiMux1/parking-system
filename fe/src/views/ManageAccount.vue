@@ -2,11 +2,12 @@
   <div id="page-top">
     <div id="wrapper">
       <Dashboard/>
-      <div id="content-wrapper" className="d-flex flex-column">
+      <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
+          <AccountTable/>
         </div>
+        <Footer/>
       </div>
-
     </div>
   </div>
 </template>
@@ -14,12 +15,14 @@
 <script>
 import '@/assets/styles/sb-admin-2.min.css'
 import Dashboard from "@/components/Dashboard";
-
+import AccountTable from "@/components/AccountTable";
+import Footer from "@/components/Footer";
 export default {
-  name: "Home",
+  name: "ManageAccount",
   components: {
     Dashboard,
-   
+    AccountTable,
+    Footer
   }
 }
 </script>
