@@ -20,6 +20,24 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "about" */ "../views/ManageAccount.vue"),
     },
+    {
+        path: "/vehicle-statistics",
+        name: "VehicleStatistics",
+        component: () =>
+            import(/* webpackChunkName: "about" */ "../views/VehicleStatistics.vue"),
+    },
+    {
+        path: "/revenues",
+        name: "Revenues",
+        component: () =>
+            import(/* webpackChunkName: "about" */ "../views/Revenues.vue"),
+    },
+    {
+        path: "/salary",
+        name: "Salary",
+        component: () =>
+            import(/* webpackChunkName: "about" */ "../views/Salary.vue"),
+    },
 ];
 
 const router = new VueRouter({
