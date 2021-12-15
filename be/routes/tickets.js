@@ -60,8 +60,6 @@ router.put('/in/:id', async (req, res) => {
   res.send(ticket);
 });
 
-
-
 router.put('/out/:id', async (req, res) => {
 
   const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
@@ -71,9 +69,16 @@ router.put('/out/:id', async (req, res) => {
 
   if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
 
-  console.log(ticket.time_in.getDate())
-  console.log(new Date(Date.now()+ 7*60*60*1000).getDate())
+  const day = new Date(Date.now()+ 7*60*60*1000).getDate() - ticket.time_in.getDate()
+  console.log(typeof day)
   
+  const price = (day+1)*5000 
+
+  const revenue = new Revenue({
+    revenue: price
+  })
+  await revenue.save()
+
   res.send(ticket);
 });
 
@@ -125,8 +130,6 @@ router.put('/createMonthlyTicket/:id', async (req, res) => {
   
   res.send(ticket);
 });
-
-
 
 router.delete('/:id', async (req, res) => {
   const ticket = await Ticket.findByIdAndRemove(req.params.id);
