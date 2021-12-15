@@ -79,7 +79,7 @@ router.put('/out/:id', async (req, res) => {
   })
   await revenue.save()
 
-  res.send(ticket);
+  res.send(revenue);
 });
 
 router.put('/monthly_in/:id', async (req, res) => {
