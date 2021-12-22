@@ -1,0 +1,39 @@
+[{
+  "_id": {
+    "$oid": "61b87212e4c23830682c74eb"
+  },
+  "isAdmin": true,
+  "isActive": true,
+  "name": "Le Van đại",
+  "username": "dailv@gmail",
+  "password": "$2b$10$/qm84eMkUDx/DFSzZH0PwO4tH9hN2PIwqcx0JwT5m7XsjsNH6l.7a",
+  "phone_number": "0123456789",
+  "address": "Ha Nam",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c2c7d41606980ed0fb261b"
+  },
+  "isAdmin": false,
+  "isActive": false,
+  "coefficients_salary": 20000,
+  "name": "Nguyễn Tiến Thành",
+  "username": "thanhnt",
+  "password": "$2b$10$tqIAf0lRy3WpGqlHva4SS.svsCMN1QqNkgjDlTADbpWvv7ZBfGHMm",
+  "phone_number": "0123456789",
+  "address": "Ha Nam",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c2c7f91606980ed0fb261e"
+  },
+  "isAdmin": false,
+  "isActive": false,
+  "coefficients_salary": 20000,
+  "name": "Đỗ Tiến Đạt",
+  "username": "datdt",
+  "password": "$2b$10$w/SLxtukLtpf2rPpQgQXFeVt0xcsfp3GaKRZ3WZaWLEiUPbI5lHeS",
+  "phone_number": "0123456789",
+  "address": "Ha Nam",
+  "__v": 0
+}]

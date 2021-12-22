@@ -1,0 +1,78 @@
+[{
+  "_id": {
+    "$oid": "61c280ecbd9a712f680620ab"
+  },
+  "revenue": 5000,
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "time": {
+    "$date": "2021-12-22T08:35:40.229Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c28113a7c1da40e5b7f82c"
+  },
+  "revenue": 5000,
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "time": {
+    "$date": "2021-12-22T08:39:40.229Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c28153a7c1da40e5b7f82d"
+  },
+  "revenue": 3000,
+  "ticket_type": "ngay",
+  "vehicle_type": "xe dap",
+  "time": {
+    "$date": "2021-12-22T08:15:40.229Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c2816fbd9a712f680620af"
+  },
+  "revenue": 150000,
+  "ticket_type": "thang",
+  "vehicle_type": "xe may",
+  "time": {
+    "$date": "2021-12-22T08:37:51.506Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c2818ebd9a712f680620b3"
+  },
+  "revenue": 150000,
+  "ticket_type": "thang",
+  "vehicle_type": "xe may",
+  "time": {
+    "$date": "2021-12-22T08:38:22.067Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c281d5bd9a712f680620b7"
+  },
+  "revenue": 50000,
+  "ticket_type": "thang",
+  "vehicle_type": "xe dap",
+  "time": {
+    "$date": "2021-12-22T08:39:33.351Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c28476a7c1da40e5b7f83c"
+  },
+  "revenue": 5000,
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "time": {
+    "$date": "2021-12-21T08:35:40.229Z"
+  },
+  "__v": 0
+}]

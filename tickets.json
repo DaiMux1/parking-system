@@ -1,0 +1,101 @@
+[{
+  "_id": {
+    "$oid": "61b75ffdf97ece3830bd1d31"
+  },
+  "ticket_type": "thang",
+  "vehicle_type": "xe dap",
+  "used": true,
+  "license_plate": "90b1-00001",
+  "time_in": {
+    "$date": "2021-12-17T10:08:15.796Z"
+  },
+  "__v": 0,
+  "IDs": "123456",
+  "due_date": {
+    "$date": "2021-12-19T10:40:18.654Z"
+  }
+},{
+  "_id": {
+    "$oid": "61b76017f97ece3830bd1d3d"
+  },
+  "ticket_type": "thang",
+  "vehicle_type": "xe may",
+  "used": true,
+  "license_plate": "89b1-12345",
+  "time_in": {
+    "$date": "2021-12-22T08:34:57.164Z"
+  },
+  "__v": 0,
+  "IDs": "123456",
+  "due_date": {
+    "$date": "2022-01-21T08:37:51.504Z"
+  }
+},{
+  "_id": {
+    "$oid": "61b76018f97ece3830bd1d3f"
+  },
+  "ticket_type": "thang",
+  "vehicle_type": "xe may",
+  "used": true,
+  "license_plate": "90b1-45678",
+  "time_in": {
+    "$date": "2021-12-13T22:00:40.470Z"
+  },
+  "__v": 0,
+  "IDs": "123456",
+  "due_date": {
+    "$date": "2022-01-21T08:38:22.063Z"
+  }
+},{
+  "_id": {
+    "$oid": "61b76019f97ece3830bd1d41"
+  },
+  "ticket_type": "thang",
+  "vehicle_type": "xe dap",
+  "used": true,
+  "license_plate": "xp-1",
+  "time_in": {
+    "$date": "2021-12-13T22:00:41.094Z"
+  },
+  "__v": 0,
+  "IDs": "234567",
+  "due_date": {
+    "$date": "2022-01-21T08:39:33.347Z"
+  }
+},{
+  "_id": {
+    "$oid": "61b76019f97ece3830bd1d43"
+  },
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "used": false,
+  "license_plate": "0",
+  "time_in": {
+    "$date": "2021-12-13T22:00:41.641Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c2823fa7c1da40e5b7f838"
+  },
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "used": false,
+  "license_plate": "0",
+  "time_in": {
+    "$date": "2021-12-13T22:00:41.641Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61c28242a7c1da40e5b7f839"
+  },
+  "ticket_type": "ngay",
+  "vehicle_type": "xe may",
+  "used": false,
+  "license_plate": "0",
+  "time_in": {
+    "$date": "2021-12-13T22:00:41.641Z"
+  },
+  "__v": 0
+}]
