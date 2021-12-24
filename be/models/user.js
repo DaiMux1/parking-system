@@ -39,6 +39,10 @@ const schemaUser = new mongoose.Schema({
     type: String,
     minlength: 5, 
     maxlength: 255
+  },
+  coefficients_salary: {
+    type: Number,
+    default: 20000
   }
 })
 
