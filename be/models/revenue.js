@@ -12,6 +12,14 @@ const revenueSchema = new mongoose.Schema({
     required: true, 
     min: 0
   }, 
+  ticket_type: {
+    type: String,
+    required: true
+  },
+  vehicle_type: {
+    type: String,
+    required: true
+  }
 })
 
 const Revenue = mongoose.model('Revenues', revenueSchema);
