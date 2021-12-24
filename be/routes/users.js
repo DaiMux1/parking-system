@@ -13,7 +13,7 @@ router.get('/', [auth, admin], async (req, res) => {
   res.send(users)
 })
 
-//
+// có thể gửi thông tin từ 4 trường, gửi cái nào cập nhật cái đó
 router.put('/:id', async (req, res) => {
   const user = await User.findById(req.params.id)
   if(!user) return res.status(400).send('The user with the given ID was not found.')
@@ -36,7 +36,7 @@ router.put('/:id', async (req, res) => {
   res.send(_.pick(user, ['name', 'username', 'phone_number', 'address']))
 })
 
-//
+// 
 router.delete('/:id', async (req, res) => {
   const user = await User.findById(req.params.id)
   if(!user) return res.status(400).send('The user with the given ID was not found.')
