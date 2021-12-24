@@ -1,3 +1,5 @@
+require('dotenv').config()
+const cors = require('cors')
 const tickets = require('./routes/tickets');
 const revenues = require('./routes/revenues');
 const users = require('./routes/users');
@@ -10,6 +12,7 @@ mongoose.connect('mongodb://localhost/parking', { useNewUrlParser: true , useUni
   .then(() => console.log('Connected to MongoDB...'))
   .catch(err => console.error('Could not connect to MongoDB...'));
 
+app.use(cors())
 app.use(express.json());
 app.use('/api/tickets', tickets);
 app.use('/api/revenues', revenues);
