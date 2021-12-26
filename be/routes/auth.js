@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 const { User } = require('../models/user')
+const { Timekeeping } = require('../models/timekeeping')
 const express = require('express');
 const router = express.Router();
 
@@ -14,11 +15,16 @@ router.post('/', async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password)
   if (!validPassword) return res.status(400).send("Invalid username or password")
 
+  const timekeeping = new Timekeeping({
+    user_id: user._id
+  })
+  await timekeeping.save()
+
   const token = user.generateAuthToken();
   user.isActive = true;
   await user.save();
 
-  res.send(token);
+  res.json({ token: token, timekeeping_id: timekeeping._id });
 })
 
 function validate(req) {
