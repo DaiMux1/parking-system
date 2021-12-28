@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
   user.isActive = true;
   await user.save();
 
-  res.json({ token: token, timekeeping_id: timekeeping._id , name: user.name });
+  res.json({ token: token, timekeeping_id: timekeeping._id, name: user.name, isAdmin: user.isAdmin });
 })
 
 function validate(req) {

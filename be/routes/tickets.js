@@ -80,7 +80,7 @@ router.put('/out/:license_plate', auth, async (req, res) => {
 
 
   const day = new Date(Date.now() + 7 * 60 * 60 * 1000).getDate() - ticket.time_in.getDate()
-  console.log(typeof day)
+  // console.log(typeof day)
 
   const unit_price = ticket.vehicle_type == 'xe may' ? 5000 : 3000
 
@@ -98,34 +98,59 @@ router.put('/out/:license_plate', auth, async (req, res) => {
 
 router.put('/monthly_in/:IDs', async (req, res) => {
 
-
-  const ticket = await Ticket.findOne({ IDs: req.params.IDs });
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
 
   if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
+  let expiry_date = ticket.due_date - new Date()
 
-  if (new Date() > ticket.due_date) return res.status(400).send('Yêu cầu gia hạn')
+  if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
   ticket.used = true
+  await ticket.save()
 
-  res.send(ticket);
+  expiry_date = new Date(expiry_date).getDate()
+  console.log(expiry_date)
+
+  res.json({ ticket: ticket, expiry_date: expiry_date });
 });
 
 router.put('/monthly_out/:IDs', async (req, res) => {
 
-  const ticket = await Ticket.findOne({ IDs: req.params.IDs });
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
 
   if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
 
-  if (new Date() > ticket.due_date) return res.status(400).send('Yêu cầu gia hạn')
+  let expiry_date = ticket.due_date - new Date()
+
+  if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
   ticket.used = false
 
-  res.send(ticket);
+  // const expiry_date = ticket.due_date.getDate() - new Date().getDate()
+
+  expiry_date = new Date(expiry_date).getDate()
+  console.log(expiry_date)
+  await ticket.save()
+
+  res.json({ ticket: ticket, expiry_date: expiry_date });
 });
 
+// gia hạn vé tháng
+router.put('/renewal/:IDs', async (req, res) => {
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
+
+  if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
+
+  ticket.due_date = +new Date(ticket.due_date) + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
+
+  await ticket.save()
+
+  res.send(ticket)
+})
 
 
-router.put('/create_monthly_ticket/:id', async (req, res) => {
+
+router.put('/create_monthly_ticket', async (req, res) => {
   const { error } = validateMonthTicket(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

@@ -48,7 +48,6 @@ const Ticket = mongoose.model('Tickets', ticketSchema);
 function validateTicket(ticket) {
   const schema = {
     license_plate: Joi.string().required(),
-    ticket_type: Joi.string().required(),
     vehicle_type: Joi.string().required(),
   }
 
