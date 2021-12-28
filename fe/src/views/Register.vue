@@ -9,67 +9,96 @@
             <div class="col-lg-7">
               <div class="p-5">
                 <div class="text-center">
-                  <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+                  <h1 class="h4 text-gray-900 mb-4">Tạo tài khoản!</h1>
                 </div>
-                <form class="user">
-                  <div class="form-group row">
-                    <div class="col-sm-6 mb-3 mb-sm-0">
-                      <input type="text" class="form-control form-control-user" id="exampleFirstName"
-                             placeholder="First Name">
-                    </div>
-                    <div class="col-sm-6">
-                      <input type="text" class="form-control form-control-user" id="exampleLastName"
-                             placeholder="Last Name">
-                    </div>
+                <form class="user" id="register-form">
+                  <div class="form-group">
+                    <input
+                      v-model="username"
+                      type="text"
+                      class="form-control form-control-user"
+                      id="name"
+                      placeholder="Họ và tên"
+                    />
                   </div>
                   <div class="form-group">
-                    <input type="email" class="form-control form-control-user" id="exampleInputEmail"
-                           placeholder="Email Address">
+                    <input
+                      v-model="email"
+                      type="email"
+                      class="form-control form-control-user"
+                      id="email"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      v-model="phone"
+                      type="text"
+                      class="form-control form-control-user"
+                      id="phone"
+                      placeholder="SĐT"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      v-model="address"
+                      type="text"
+                      class="form-control form-control-user"
+                      id="address"
+                      placeholder="Địa chỉ"
+                    />
                   </div>
                   <div class="form-group row">
                     <div class="col-sm-6 mb-3 mb-sm-0">
-                      <input type="password" class="form-control form-control-user"
-                             id="exampleInputPassword" placeholder="Password">
+                      <input
+                        v-model="password"
+                        type="password"
+                        class="form-control form-control-user"
+                        id="exampleInputPassword"
+                        placeholder="Mật khẩu"
+                      />
                     </div>
                     <div class="col-sm-6">
-                      <input type="password" class="form-control form-control-user"
-                             id="exampleRepeatPassword" placeholder="Repeat Password">
+                      <input
+                        v-model="passwordConfirm"
+                        type="password"
+                        class="form-control form-control-user"
+                        id="exampleRepeatPassword"
+                        placeholder="Nhập lại mật khẩu"
+                      />
                     </div>
                   </div>
-                  <a href="login.html" class="btn btn-primary btn-user btn-block">
-                    Register Account
+                  <button class="btn btn-primary btn-user btn-block">
+                    Đăng ký tài khoản
+                  </button>
+                  <hr />
+                  <a href="#" class="btn btn-google btn-user btn-block">
+                    <i class="fab fa-google fa-fw"></i> Đăng ký với Google
                   </a>
-                  <hr>
-                  <a href="index.html" class="btn btn-google btn-user btn-block">
-                    <i class="fab fa-google fa-fw"></i> Register with Google
-                  </a>
-                  <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                    <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
+                  <a href="#" class="btn btn-facebook btn-user btn-block">
+                    <i class="fab fa-facebook-f fa-fw"></i> Đăng ký với Facebook
                   </a>
                 </form>
-                <hr>
-                <div class="text-center">
-                  <a class="small" href="forgot-password.html">Forgot Password?</a>
-                </div>
-                <div class="text-center">
-                  <a class="small" href="">Already have an account? Login!</a>
-                </div>
+                <!--                <hr>-->
+                <!--                <div class="text-center">-->
+                <!--                  <a class="small" href="#">Quên mật khẩu?</a>-->
+                <!--                </div>-->
+                <!--                <div class="text-center">-->
+                <!--                  <router-link :to="{name:'Login'}" class="small">Đã có tài khoản? Đăng nhập ở đây!</router-link>-->
+                <!--                </div>-->
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
-
 </template>
 
 <script>
-import '@/assets/styles/sb-admin-2.min.css'
-import axios from "axios";
+import "@/assets/styles/sb-admin-2.min.css";
 export default {
-  name: "SignUp",
+  name: "Register",
   data() {
     return {
       username: "",
@@ -80,41 +109,9 @@ export default {
       passwordConfirm: "",
     };
   },
-  methods: {
-    async handleSubmit() {
-      try {
-        const res = await axios({
-          method: "POST",
-          url: "http://localhost:8080/signup",
-          data: {
-            email: this.email,
-            username: this.username,
-            password: this.password,
-            phone: this.phone,
-          },
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-        });
-        if (res.data) {
-          console.log("logged in", res.data);
-          localStorage.setItem("token", res.data);
-          if (this.$route.name === "SignUp") {
-            alert("Sign Up successful !!");
-            this.$router.push("/sign-in");
-          }
-        }
-      } catch (err) {
-        alert(err.response.data.message)
-      }
-    },
-  },
+  computed: {},
+  methods: {},
 };
 </script>
 
-<style scoped>
-.bg-gradient-primary {
-  hight: 100%;
-}
-</style>
+<style scoped></style>
