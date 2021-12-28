@@ -1,133 +1,155 @@
 const { Ticket, validate, validateMonthTicket } = require('../models/ticket')
 const { Revenue } = require('../models/revenue')
+const auth = require('../middleware/auth');
 const mongoose = require('mongoose');
 const _ = require('lodash')
 const express = require('express');
 const router = express.Router();
 
+// lấy tất cả các vé
 router.get('/', async (req, res) => {
-  const tickets = await Ticket.find().sort('time_in');
+  const tickets = await Ticket.find({ used: true }).sort('time_in');
   res.send(tickets);
 });
 
+// lấy các vé ngày chưa được sử dụng
 router.get('/unused', async (req, res) => {
-  const tickets = await Ticket.findOne({ used: false, ticket_type: 'ngay'})
+  const tickets = await Ticket.findOne({ used: false, ticket_type: 'ngay' })
   if (!tickets) return res.status(400).send('Out of ticket')
   res.send(tickets)
 })
 
+// lấy vé theo biển số phục vụ soát vé đầu ra
 router.get('/:license_plate', async (req, res) => {
-  const ticket = await Ticket.findOne({ license_plate: req.params.license_plate});
+  const ticket = await Ticket.findOne({ license_plate: req.params.license_plate });
 
   if (!ticket) return res.status(404).send('The genre with the given ID was not found.');
 
   res.send(ticket);
 });
 
+// lấy vé tháng, đầu vào là IDs là số chứng minh thư
 router.get('/monthlyTicket/:IDs', async (req, res) => {
   const tickets = await Ticket.findOne({ IDs: req.params.IDs })
   if (!tickets) return res.status(400).send('Out of ticket')
   res.send(tickets)
 })
 
+// tạo 1 vé mới, tạo sẵn 100 cái rồi chỉ sử dụng 100 cái đó cho cả vé tháng vé ngày
 router.post('/', async (req, res) => {
 
-  const { error } = validate(req.body); 
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
 
   let ticket = new Ticket(_.pick(req.body, ['license_plate', 'ticket_type', 'vehicle_type']));
-    
+
   ticket = await ticket.save();
-  
+
   res.send(ticket);
 });
 
-router.put('/in/:id', async (req, res) => {
-  const { error } = validate(req.body); 
+// soát vé đầu vào cho vé ngày 
+router.put('/in', auth, async (req, res) => {
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-      license_plate: req.body.license_plate, 
-      time_in: Date.now() + 7*60*60*1000,
-      ticket_type: req.body.ticket_type,
-      vehicle_type: req.body.vehicle_type,
-      used: true
-    }, {new: true});
+  let ticket = await Ticket.findOne({ used: false, ticket_type: 'ngay' })
+  if (!ticket) return res.status(400).send('Out of ticket')
 
-  if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
-  
+  ticket.license_plate = req.body.license_plate,
+    ticket.time_in = Date.now() + 7 * 60 * 60 * 1000,
+    ticket.vehicle_type = req.body.vehicle_type,
+    ticket.used = true
+
+  await ticket.save()
+
   res.send(ticket);
 });
 
-router.put('/out/:id', async (req, res) => {
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-      used: false, 
-      license_plate: '0', 
-    }, {new: true});
+router.put('/out/:license_plate', auth, async (req, res) => {
+  const ticket = await Ticket.findOne({ license_plate: req.params.license_plate });
 
   if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
 
-  const day = new Date(Date.now()+ 7*60*60*1000).getDate() - ticket.time_in.getDate()
+  ticket.license_plate = "0"
+  ticket.used = false
+
+  await ticket.save()
+
+
+  const day = new Date(Date.now() + 7 * 60 * 60 * 1000).getDate() - ticket.time_in.getDate()
   console.log(typeof day)
-  
-  const price = (day+1)*5000 
+
+  const unit_price = ticket.vehicle_type == 'xe may' ? 5000 : 3000
+
+  const price = (day + 1) * unit_price
 
   const revenue = new Revenue({
-    revenue: price
+    revenue: price,
+    ticket_type: "ngay",
+    vehicle_type: ticket.vehicle_type
   })
   await revenue.save()
 
   res.send(revenue);
 });
 
-router.put('/monthly_in/:id', async (req, res) => {
+router.put('/monthly_in/:IDs', async (req, res) => {
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-      used: true
-    }, {new: true});
 
-  if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
-  
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs });
+
+  if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
+
+  if (new Date() > ticket.due_date) return res.status(400).send('Yêu cầu gia hạn')
+
+  ticket.used = true
+
   res.send(ticket);
 });
 
-router.put('/monthly_out/:id', async (req, res) => {
+router.put('/monthly_out/:IDs', async (req, res) => {
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-      used: false, 
-    }, {new: true});
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs });
 
-  if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
-  
+  if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
+
+  if (new Date() > ticket.due_date) return res.status(400).send('Yêu cầu gia hạn')
+
+  ticket.used = false
+
   res.send(ticket);
 });
 
 
 
-router.put('/createMonthlyTicket/:id', async (req, res) => {
-  const { error } = validateMonthTicket(req.body); 
+router.put('/create_monthly_ticket/:id', async (req, res) => {
+  const { error } = validateMonthTicket(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const ticket = await Ticket.findByIdAndUpdate(req.params.id, {
-      license_plate: req.body.license_plate, 
-      ticket_type: 'thang',
-      due_date:  +new Date() + 7*60*60*1000 + 30*60*60*24*1000,
-      vehicle_type: req.body.vehicle_type,
-      IDs: req.body.IDs
-    }, {new: true});
+  let ticket = await Ticket.findOne({ used: false, ticket_type: 'ngay' })
+  if (!ticket) return res.status(400).send('Out of ticket')
 
-  if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
+  ticket.license_plate = req.body.license_plate
+  ticket.due_date = +new Date() + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
+  ticket.vehicle_type = req.body.vehicle_type
+  ticket.IDs = req.body.IDs
+  ticket.ticket_type = 'thang'
+
+  await ticket.save()
 
   const price = req.body.vehicle_type === 'xe may' ? 150000 : 50000
 
   const revenue = new Revenue({
-    revenue: price
+    revenue: price,
+    ticket_type: "thang",
+    vehicle_type: ticket.vehicle_type
   })
 
   await revenue.save()
-  
+
   res.send(ticket);
 });
 
@@ -138,8 +160,6 @@ router.delete('/:id', async (req, res) => {
 
   res.send(ticket);
 });
-
-
 
 module.exports = router;
 
