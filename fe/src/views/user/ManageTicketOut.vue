@@ -18,15 +18,34 @@
               <div class="card-body">
                 <div class="table-responsive">
                   <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                    <div class="row" style="margin-bottom: 1%;">
+                    <div class="row" >
                       <div class="col-sm-12 col-md-6">
-                        <div class="dataTables_filter text-left" id="dataTable_month"><label>Nhập biển số xe
-                          <input v-model="licensePlate"
+                        <div class="dataTables_filter text-left" id="dataTable_month"><label>
+                          <select v-model="selectOption"  aria-controls="dataTable" class="custom-select custom-select-sm w-50 form-control form-control-sm">
+                            <option value="date">Soát vé theo ngày </option>
+                            <option value="month">Soát vé theo tháng </option>
+                          </select>
+                          <input v-if="isSelectMonth" v-model="id"
+                                 type="text"
+                                 class="form-control form-control-sm"
+                                 placeholder="ID"
+                          >
+                          <a v-if="isSelectMonth" v-on:click="checkMonthlyTicket" class="btn btn-success btn-circle btn-sm"
+                             style="margin-left: 2%">
+                            <i class="fas fa-check"></i>
+                          </a>
+                          <input v-if="!isSelectMonth" v-model="licensePlate" style="margin-right: 1%"
                                  type="text"
                                  class="form-control form-control-sm"
                                  placeholder="Biển số"
                           >
-                          <a v-on:clicl="checkAndCaculateTicket" class="btn btn-success btn-circle btn-sm" style="margin-left: 2%">
+<!--                          <select v-if="!isSelectMonth" v-model="type"  aria-controls="dataTable" class="custom-select custom-select-sm w-25 form-control form-control-sm">-->
+<!--                            <option value="xe_dap">Xe đạp </option>-->
+<!--                            <option value="xe_may">Xe máy </option>-->
+<!--                          </select>-->
+
+                          <a v-if="!isSelectMonth" v-on:click="getRevenues" class="btn btn-success btn-circle btn-sm"
+                             style="margin-left: 2%">
                             <i class="fas fa-check"></i>
                           </a></label>
                         </div>
@@ -38,32 +57,31 @@
                         <table class="table table-bordered" id="dataTable">
                           <thead>
                           <tr>
-                            <th>Mã vé</th>
-                            <th>Ngày</th>
-                            <th>Loại vé</th>
-                            <th>Biển số</th>
-                            <th>Thời gian</th>
-                            <th>Thành tiền</th>
+                            <th v-if="isSelectMonth">Mã vé</th>
+                            <th v-if="isSelectMonth">Loại xe</th>
+                            <th v-if="isSelectMonth">Biển số xe</th>
+                            <th v-if="isSelectMonth">Còn lại</th>
+                            <th v-else>Thành tiền</th>
+
                           </tr>
                           </thead>
-
                           <tbody>
                           <tr>
-                            <td>1</td>
-                            <td>2</td>
-                            <td>3</td>
-                            <td>4</td>
-                            <td>5</td>
-                            <td>6</td>
+                            <td v-if="isSelectMonth">{{ticketData.ticket.IDs}}</td>
+                            <td v-else>{{money}}</td>
+                            <td v-if="isSelectMonth">{{ticketData.ticket.vehicle_type}}</td>
+                            <td v-if="isSelectMonth">{{ticketData.ticket.license_plate}}</td>
+                            <td v-if="isSelectMonth">{{ticketData.expiry_date}}</td>
                           </tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
+
                   </div>
                 </div>
               </div>
-              <button v-if="isHasTicketData" class="btn btn-primary btn-user btn-block">
+              <button v-if="isHasDataTicket" v-on:click="clearData" class="btn btn-primary btn-user btn-block">
                 Xác nhận
               </button>
             </div>
@@ -88,43 +106,73 @@ export default {
   data: function () {
     return {
       licensePlate: "",
-      ticket: {
+      type: "xe_dap",
+      selectOption: "date",
+      id: "",
+      money: "",
+      ticketData: {
+        expiry_date: "",
+        ticket: {
+          license_plate: "",
+          type: "",
+          IDs: "",
+        }
       }
     }
   },
   methods: {
-
-    async checkAndCaculateTicket() {
+    async checkMonthlyTicket() {
       try {
         const res = await axios({
           method: "PUT",
-          url: "http://localhost:3000/api/tickets/monthly_in/" + this.licensePlate,
-          params: {
-            day: parseInt(this.date.substring(8, 10)),
-            month: parseInt(this.date.substring(5, 7)),
-            year: parseInt(this.date.substring(0, 4)),
-          },
+          url: "http://localhost:3000/api/tickets/monthly_out/" + this.id,
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
-            "x-auth-token": this.token
           },
         });
         if (res.data) {
-          this.ticket = res.data
-          if (this.$route.name === "ManageTicketOut") {
-            this.$router.go(this.$router.currentRoute)
+          this.ticketData = res.data
+          if(res.data.expiry_date) {
+            this.ticketData.expiry_date = res.data.expiry_date + " ngày"
           }
+        }
+      } catch (err) {
+        alert("Vé đang được sử dụng")
+      }
+    },
+    async getRevenues() {
+      try {
+        const res = await axios({
+          method: "PUT",
+          url: "http://localhost:3000/api/tickets/out/" + this.licensePlate,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+        });
+        if (res.data) {
+          this.money = res.data
         }
       } catch (err) {
         alert(err)
       }
+    },
+    clearData() {
+      if (this.isHasDataTicket) {
+        this.ticketData = {}
+        this.$router.go(this.$router.currentRoute)
+      }
     }
   },
   computed: {
-    isHasTicketData: function () {
-      return !(JSON.stringify(this.ticket) === '{}')
-    }
+    isHasDataTicket: function () {
+      return !(this.ticketData.ticket.license_plate === "")
+    },
+    isSelectMonth: function (){
+      return this.selectOption ==="month"
+    },
+
   },
   components: {
     Dashboard,

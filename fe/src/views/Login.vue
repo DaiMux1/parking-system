@@ -63,7 +63,7 @@
 <script>
 import '@/assets/styles/sb-admin-2.min.css'
 import axios from "axios";
-import {mapState, mapActions} from "vuex";
+import {mapActions} from "vuex";
 export default {
   name: "Login",
   data() {
@@ -71,11 +71,6 @@ export default {
       username: "",
       password: "",
     };
-  },
-  computed: {
-    ...mapState({
-      token: (state) => state.account.token,
-    }),
   },
   methods: {
     async handleSubmit() {
@@ -94,7 +89,6 @@ export default {
         });
 
         if (res.data) {
-
           if (this.$route.name === "Login") {
             this.$router.push({name: 'Home'});
             alert("Đăng nhập thành công !!")
