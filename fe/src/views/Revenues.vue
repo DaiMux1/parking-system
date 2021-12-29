@@ -1,32 +1,46 @@
 <template>
   <div id="page-top">
     <div id="wrapper">
-      <Dashboard/>
+      <Dashboard />
       <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-          <RevenuesTable/>
+          <NavBar />
+          <RevenuesTable :revenues="revenues" />
         </div>
-        <Footer/>
+        <Footer />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import '@/assets/styles/sb-admin-2.min.css'
+import "@/assets/styles/sb-admin-2.min.css";
 import Dashboard from "@/components/Dashboard";
 import RevenuesTable from "@/components/RevenuesTable";
 import Footer from "@/components/Footer";
+import NavBar from "@/components/NavBar";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "Revenues",
   components: {
     Dashboard,
     RevenuesTable,
-    Footer
-  }
-}
+    Footer,
+    NavBar,
+  },
+  data: function () {
+    return {};
+  },
+  computed: {
+    ...mapGetters("ticket", ["revenues"]),
+  },
+  methods: {
+    ...mapActions("ticket", ["getRevenues"]),
+  },
+  mounted() {
+    this.getRevenues();
+  },
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

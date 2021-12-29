@@ -45,16 +45,7 @@
                     <th>Lương(VND)</th>
                   </tr>
                   </thead>
-                  <tfoot>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tên nhân viên</th>
-                    <th>Tháng</th>
-                    <th>Số lượng vé ngày</th>
-                    <th>Số lượng vé tháng</th>
-                    <th>Doanh thu (VND)</th>
-                  </tr>
-                  </tfoot>
+          
                   <tbody>
                   <tr  v-for="(user, index) in usersFilter" :key='index'>
                     <td>{{index +1}}</td>

@@ -1,9 +1,8 @@
 <template>
   <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Thống kê doanh thu</h1>
-    <p class="mb-4"> Thống kê doanh thu của bãi gửi xe theo tháng </p>
+    <p class="mb-4">Thống kê doanh thu của bãi gửi xe theo tháng</p>
 
     <!-- DataTales -->
     <div class="card shadow mb-4">
@@ -13,61 +12,63 @@
       <div class="card-body">
         <div class="table-responsive">
           <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-            <div class="row" style="margin-bottom: 1%;">
+            <div class="row" style="margin-bottom: 1%">
               <div class="col-sm-12 col-md-6">
                 <div class="col-sm-12 col-md-6">
-                  <div class="dataTables_filter text-left" id="dataTable_month"><label>Chọn tháng:
-                    <input type="month"
-                           v-model="month"
-                           class="form-control form-control-sm"
-                    >
-                    <a v-on:click="getRevenuesByMonth" class="btn btn-success btn-circle btn-sm" style="margin-left: 2%">
-                      <i class="fas fa-check"></i>
-                    </a></label>
+                  <div class="dataTables_filter text-left" id="dataTable_month">
+                    <label
+                      >Chọn tháng:
+                      <input
+                        type="month"
+                        v-model="month"
+                        class="form-control form-control-sm" />
+                      <a
+                        v-on:click="getRevenuesByMonth"
+                        class="btn btn-success btn-circle btn-sm"
+                        style="margin-left: 2%"
+                      >
+                        <i class="fas fa-check"></i> </a
+                    ></label>
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table
+                  class="table table-bordered"
+                  id="dataTable"
+                  width="100%"
+                  cellspacing="0"
+                >
                   <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tháng</th>
-                    <th>Số lượng vé ngày</th>
-                    <th>Số lượng vé tháng</th>
-                    <th>Doanh thu (VND)</th>
-                  </tr>
+                    <tr>
+                      <th>STT</th>
+                      <th>Tháng</th>
+                      <th>Số lượng vé ngày</th>
+                      <th>Số lượng vé tháng</th>
+                      <th>Doanh thu (VND)</th>
+                    </tr>
                   </thead>
-                  <tfoot>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tháng</th>
-                    <th>Số lượng vé ngày</th>
-                    <th>Số lượng vé tháng</th>
-                    <th>Doanh thu (VND)</th>
-                  </tr>
-                  </tfoot>
+
                   <tbody v-if="isSelectMonth">
-                  <tr>
-                    <td>1</td>
-                    <td>{{ revenue.month }} / {{ revenue.year }}</td>
-                    <td>{{ revenue.day_ticket }}</td>
-                    <td>{{ revenue.month_ticket }}</td>
-                    <td>{{ revenue.revenue }}</td>
-                  </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>{{ revenue.month }} / {{ revenue.year }}</td>
+                      <td>{{ revenue.day_ticket }}</td>
+                      <td>{{ revenue.month_ticket }}</td>
+                      <td>{{ revenue.revenue }}</td>
+                    </tr>
                   </tbody>
                   <tbody v-else>
-                  <tr  v-for="(revenue, index) in revenues" :key='index'>
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ revenue.month }} / {{ revenue.year }}</td>
-                    <td>{{ revenue.day_ticket }}</td>
-                    <td>{{ revenue.month_ticket }}</td>
-                    <td>{{ revenue.revenue }}</td>
-                  </tr>
+                    <tr v-for="(revenue, index) in revenues" :key="index">
+                      <td>{{ index + 1 }}</td>
+                      <td>{{ revenue.month }} / {{ revenue.year }}</td>
+                      <td>{{ revenue.day_ticket }}</td>
+                      <td>{{ revenue.month_ticket }}</td>
+                      <td>{{ revenue.revenue }}</td>
+                    </tr>
                   </tbody>
-
                 </table>
               </div>
             </div>
@@ -79,10 +80,10 @@
 </template>
 
 <script>
-import '@/assets/styles/sb-admin-2.min.css'
-import '@/assets/styles/dataTables.bootstrap4.css'
+import "@/assets/styles/sb-admin-2.min.css";
+import "@/assets/styles/dataTables.bootstrap4.css";
 import axios from "axios";
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 
 export default {
   name: "RevenuesTable",
@@ -90,10 +91,10 @@ export default {
     return {
       month: "",
       revenue: "",
-    }
+    };
   },
   props: {
-    revenues: []
+    revenues: [],
   },
   methods: {
     async getRevenuesByMonth() {
@@ -102,43 +103,43 @@ export default {
           method: "GET",
           url: "http://localhost:3000/api/revenues",
           params: {
-            month: parseInt(this.month.substring(5,7)),
-            year: parseInt(this.month.substring(0,4))
+            month: parseInt(this.month.substring(5, 7)),
+            year: parseInt(this.month.substring(0, 4)),
           },
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
-            "x-auth-token": this.token
+            "x-auth-token": this.token,
           },
         });
         if (res.data) {
-          this.revenue = res.data
+          this.revenue = res.data;
           if (this.$route.name === "Revenues") {
-            alert("Doanh thu của tháng " + this.month + " sẽ được hiển thị ở bảng dưới !!!");
+            alert(
+              "Doanh thu của tháng " +
+                this.month +
+                " sẽ được hiển thị ở bảng dưới !!!"
+            );
           }
         }
       } catch (err) {
-        alert(err)
+        alert(err);
       }
-    }
+    },
   },
   computed: {
     ...mapState({
       token: (state) => state.account.user.token,
     }),
     isSelectMonth: function () {
-      if(this.month) {
+      if (this.month) {
         return true;
       }
       return false;
-    }
+    },
   },
-  mounted() {
-
-  }
-}
+  mounted() {},
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
