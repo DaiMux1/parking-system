@@ -37,7 +37,7 @@
                         />
                       </div>
 
-                      <a class="btn btn-primary btn-user btn-block">
+                       <a v-on:click="handleSubmit" class="btn btn-primary btn-user btn-block">
                         Đăng nhập
                       </a>
                     </form>
@@ -60,10 +60,10 @@
     </div>
   </div>
 </template>
-
 <script>
-import "@/assets/styles/sb-admin-2.min.css";
-
+import '@/assets/styles/sb-admin-2.min.css'
+import axios from "axios";
+import {mapState, mapActions} from "vuex";
 export default {
   name: "Login",
   data() {
@@ -71,6 +71,43 @@ export default {
       username: "",
       password: "",
     };
+  },
+  computed: {
+    ...mapState({
+      token: (state) => state.account.token,
+    }),
+  },
+  methods: {
+    async handleSubmit() {
+      try {
+        const res = await axios({
+          method: "POST",
+          url: "http://localhost:3000/api/auth",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+          },
+          data: {
+            username: this.username,
+            password: this.password
+          },
+        });
+
+        if (res.data) {
+
+          if (this.$route.name === "Login") {
+            this.$router.push({name: 'Home'});
+            alert("Đăng nhập thành công !!")
+          }
+          if (res.data) {
+            this.submitUser(res.data)
+          }
+        }
+      } catch (err) {
+        alert(err);
+      }
+    },
+    ...mapActions('account', ["submitUser"]),
   },
 };
 </script>

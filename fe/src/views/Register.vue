@@ -11,7 +11,7 @@
                 <div class="text-center">
                   <h1 class="h4 text-gray-900 mb-4">Tạo tài khoản!</h1>
                 </div>
-                <form class="user" id="register-form">
+                <form class="user" @submit.prevent="handleSubmit" id="register-form">
                   <div class="form-group">
                     <input
                       v-model="username"
@@ -27,7 +27,7 @@
                       type="email"
                       class="form-control form-control-user"
                       id="email"
-                      placeholder="Email"
+                      placeholder="Username"
                     />
                   </div>
                   <div class="form-group">
@@ -94,9 +94,10 @@
     </div>
   </div>
 </template>
-
 <script>
-import "@/assets/styles/sb-admin-2.min.css";
+import '@/assets/styles/sb-admin-2.min.css'
+import axios from "axios";
+import {mapState} from "vuex";
 export default {
   name: "Register",
   data() {
@@ -109,9 +110,44 @@ export default {
       passwordConfirm: "",
     };
   },
-  computed: {},
-  methods: {},
+  computed: {
+    ...mapState({
+      token: (state) => state.account.user.token,
+    }),
+  },
+  methods: {
+    async handleSubmit() {
+      try {
+        const res = await axios({
+          method: "POST",
+          url: "http://localhost:3000/api/users/create",
+          data: {
+            name: this.username,
+            username: this.email,
+            password: this.password,
+            phone_number: this.phone,
+            address: this.address
+          },
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "x-auth-token": this.token
+          },
+        });
+
+        if (res.data) {
+          console.log("logged in", res.data);
+          localStorage.setItem("token", res.data);
+          if (this.$route.name === "Register") {
+            alert("Đăng ký thành công !!");
+            this.$router.push({name: 'ManageAccount'})
+          }
+        }
+      } catch (err) {
+        alert(err.response.data.message)
+      }
+    },
+  },
 };
 </script>
-
 <style scoped></style>
