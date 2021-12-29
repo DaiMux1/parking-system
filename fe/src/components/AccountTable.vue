@@ -3,86 +3,74 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Quản lý tài khoản nhân viên</h1>
-    <p class="mb-4"> Bao gồm các thông tin về tài khoản của nhân viên và các thao tác (thêm, sửa, xóa) với từng tài khoản </p>
+    <p class="mb-4"> Bao gồm các thông tin về tài khoản của nhân viên và các thao tác (thêm, sửa, xóa) với từng tài
+      khoản </p>
+
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Dữ liệu về tài khoản</h6>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4">
+          <h6 class="m-0 font-weight-bold text-primary">Dữ liệu về tài khoản</h6>
+          <router-link :to="{name:'Register'}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+              class="fas fa-user-plus fa-sm text-white-50"></i> Tạo tài khoản nhân viên
+          </router-link>
+        </div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
-            <tr>
-              <th>STT</th>
-              <th>ID</th>
-              <th>Tên nhân viên</th>
-              <th>Username</th>
-              <th>Hành động</th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr>
-              <th>STT</th>
-              <th>ID</th>
-              <th>Tên nhân viên</th>
-              <th>Username</th>
-              <th>Hành động</th>
-            </tr>
-            </tfoot>
-            <tbody>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            <tr>
-              <td>1</td>
-              <td>001</td>
-              <td>Nguyễn Văn A</td>
-              <td>nguyenvana@gmail.com</td>
-              <td>Thêm sửa xóa</td>
-            </tr>
-            </tbody>
-          </table>
+          <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <div id="dataTable_filter" class="dataTables_filter"><label>Lọc theo tên:<input v-model="name"
+                                                                                                type="search"
+                                                                                                class="form-control form-control-sm"
+                                                                                                placeholder="Nhập tên nhân viên"
+                                                                                                aria-controls="dataTable"></label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <table class="table table-bordered" id="dataTable">
+                  <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>ID</th>
+                    <th>Tên nhân viên</th>
+                    <th>Username</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Hành động</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="(user, index) in usersFilter" :key='index'>
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ user._id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.phone_number }}</td>
+                    <td>{{ user.address }}</td>
+                    <td>
+                      <a v-on:click="salaryUser(user)" class="btn btn-info btn-circle" style="margin-right: 3%;">
+                        <i class="fa fa-eye"></i>
+                      </a>
+                      <a v-on:click="isEditUser=true" class="btn btn-success btn-circle" style="margin-right: 3%;">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <a v-on:click="deleteUser(user)" class="btn btn-danger btn-circle">
+                        <i class="fas fa-trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -91,8 +79,88 @@
 
 <script>
 import '@/assets/styles/sb-admin-2.min.css'
+import '@/assets/styles/dataTables.bootstrap4.css'
+import axios from "axios";
+import {mapState} from "vuex";
+
 export default {
-  name: "AccountTable"
+  name: "AccountTable",
+  props: {
+    users: []
+  },
+  data: function () {
+    return {
+      name,
+      isEditUser: false,
+    }
+  },
+  methods: {
+    async deleteUser(user) {
+      try {
+        const res = await axios({
+          method: "DELETE",
+          url: "http://localhost:3000/api/users/" + user._id,
+
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "x-auth-token": this.token
+          },
+        });
+        if (res.data) {
+          if (this.$route.name === "ManageAccount") {
+            alert("Xóa tài khoản thành công!!");
+            this.$router.go(this.$router.currentRoute)
+          }
+        }
+
+      } catch (err) {
+        alert(err.response.data.message)
+      }
+    },
+    // async editUserInfo() {
+    //   this.editUser=false
+    //   try {
+    //     const res = await axios({
+    //       method: "PUT",
+    //       url: "http://localhost:3000/api/users/" + this.user._id,
+    //       data: {
+    //         username: this.editUser.name,
+    //         email: this.editUser.username,
+    //         password: this.editUser.password,
+    //         phone_number: this.editUser.phone,
+    //         address: this.editUser.address,
+    //         coefficients_salary: this.editUser.coeSalary
+    //       },
+    //       headers: {
+    //         "Access-Control-Allow-Origin": "*",
+    //         "Content-Type": "application/json",
+    //         "x-auth-token": this.token
+    //       },
+    //     });
+    //     if (res.data) {
+    //       if (this.$route.name === "EditUser") {
+    //         alert("Chỉnh sửa thông tin thành công!!");
+    //         this.$router.push({name: "ManageAccount"})
+    //       }
+    //     }
+    //
+    //   } catch (err) {
+    //     alert(err.response.data)
+    //   }
+    // },
+    salaryUser(user) {
+      this.$router.push({name: 'Salary', params: {name: user.name}})
+    }
+  },
+  computed: {
+    usersFilter: function () {
+      return this.users.filter(user => (user.name.toLowerCase().includes(this.name.toLowerCase())));
+    },
+    ...mapState({
+      token: (state) => state.account.user.token,
+    }),
+  },
 }
 </script>
 

@@ -4,7 +4,8 @@
       <Dashboard/>
       <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-          <AccountTable/>
+          <NavBar/>
+          <AccountTable :users="users"/>
         </div>
         <Footer/>
       </div>
@@ -14,15 +15,36 @@
 
 <script>
 import '@/assets/styles/sb-admin-2.min.css'
+import '@/assets/styles/dataTables.bootstrap4.css'
 import Dashboard from "@/components/Dashboard";
 import AccountTable from "@/components/AccountTable";
 import Footer from "@/components/Footer";
+import NavBar from "@/components/NavBar";
+import {mapGetters, mapActions, mapState} from "vuex";
+
 export default {
   name: "ManageAccount",
   components: {
     Dashboard,
     AccountTable,
-    Footer
+    Footer,
+    NavBar
+  },
+  data: function () {
+    return {
+    }
+  },
+  computed: {
+    ...mapGetters("account", ['users']),
+    ...mapState({
+      token: (state) => state.account.user.token
+    })
+  },
+  methods: {
+    ...mapActions('account', ['getUsers']),
+  },
+  mounted() {
+    this.getUsers(this.token)
   }
 }
 </script>
