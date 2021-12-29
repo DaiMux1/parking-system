@@ -11,50 +11,68 @@ const routes = [
         name: "Home",
 
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/Home.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/Home.vue"),
     },
     {
         path: "/404",
         name: "404Page",
 
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/404Page.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/404Page.vue"),
     },
     {
         path: "/login",
         name: "Login",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/Login.vue"),
     },
     {
         path: "/register",
         name: "Register",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/Register.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/Register.vue"),
     },
     {
         path: "/manage-account",
         name: "ManageAccount",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/ManageAccount.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/ManageAccount.vue"),
     },
     {
         path: "/vehicle-statistics",
         name: "VehicleStatistics",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/VehicleStatistics.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/VehicleStatistics.vue"),
     },
     {
         path: "/revenues",
         name: "Revenues",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/Revenues.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/Revenues.vue"),
     },
     {
         path: "/salary",
         name: "Salary",
         component: () =>
-            import(/* webpackChunkName: "about" */ "../views/Salary.vue"),
+            import ( /* webpackChunkName: "about" */ "../views/Salary.vue"),
+    },
+    {
+        path: "/manage-ticket-in",
+        name: "ManageTicketIn",
+        component: () =>
+            import ( /* webpackChunkName: "about" */ "../views/user/ManageTicketIn"),
+    },
+    {
+        path: "/manage-ticket-out",
+        name: "ManageTicketOut",
+        component: () =>
+            import ( /* webpackChunkName: "about" */ "../views/user/ManageTicketOut"),
+    },
+    {
+        path: "/manage-ticket/create-monthly-ticket",
+        name: "CreateMonthlyTicket",
+        component: () =>
+            import ( /* webpackChunkName: "about" */ "../views/user/CreateMonthlyTicket"),
     },
 ];
 
