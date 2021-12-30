@@ -72,7 +72,7 @@ router.put('/logout/:timekeeping_id', auth, async (req, res) => {
   await user.save()
 
   let timekeeping = await Timekeeping.findById(req.params.timekeeping_id)
-  timekeeping.end_time = +new Date() + 7 * 60 * 60 * 1000,
+  timekeeping.end_time = Date.now() + 7 * 60 * 60 * 1000,
 
   await timekeeping.save()
   res.send(user)
