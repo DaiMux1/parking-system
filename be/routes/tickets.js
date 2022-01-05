@@ -57,6 +57,7 @@ router.put('/in/:IDs', auth, async (req, res) => {
   let ticket = await Ticket.findOne({ IDs: req.params.IDs })
   if (!ticket) return res.status(404).send('IDs is not found')
 
+  if (ticket.used) return res.status(400).send('Ticket is used')
 
   ticket.license_plate = req.body.license_plate,
     ticket.time_in = Date.now() + 7 * 60 * 60 * 1000,
@@ -119,11 +120,11 @@ router.put('/out/:IDs', auth, async (req, res) => {
 
 router.put('/monthly_in/:IDs', async (req, res) => {
 
-  const ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
+  let ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
 
   if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
 
-  if (ticket.used) return res.status(404).send('Vé đã được sử dụng')
+  // if (ticket.used) return res.status(404).send('Vé đã được sử dụng')
 
   let expiry_date = ticket.due_date - new Date()
 
@@ -133,9 +134,9 @@ router.put('/monthly_in/:IDs', async (req, res) => {
   await ticket.save()
 
   expiry_date = new Date(expiry_date).getDate()
-  console.log(expiry_date)
-
-  res.send({ ticket: ticket, expiry_date: expiry_date });
+  // console.log(expiry_date)
+  ticket._doc.expiry_date = expiry_date
+  res.send(ticket);
 });
 
 router.put('/monthly_out/:IDs', async (req, res) => {

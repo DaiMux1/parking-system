@@ -133,7 +133,7 @@ export default {
       name: (state) => state.account.user.name,
     }),
     isAdminPage: function () {
-      return !this.isAdmin;
+      return this.isAdmin;
     },
   },
 };
