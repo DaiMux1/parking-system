@@ -7,8 +7,15 @@ const express = require('express');
 const router = express.Router();
 
 // lấy tất cả các vé
-router.get('/', async (req, res) => {
-  const tickets = await Ticket.find({ used: true }).sort('time_in');
+router.get('/:page', async (req, res) => {
+  let perPage = 2
+  let page = req.params.page || 1
+
+  const tickets = await Ticket
+    .find({ used: true })
+    .skip((perPage * page) - perPage)
+    .limit(perPage)
+    .sort('-time_in');
   res.send(tickets);
 });
 
