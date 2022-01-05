@@ -77,27 +77,44 @@ router.put('/out/:IDs', auth, async (req, res) => {
 
   if (!ticket.used) return res.status(400).send('Ticket is not used')
 
-  ticket.license_plate = "0"
-  ticket.used = false
+  if (ticket.ticket_type == 'ngay') {
+    ticket.license_plate = "0"
+    ticket.used = false
 
-  await ticket.save()
+    await ticket.save()
 
 
-  const day = new Date(Date.now() + 7 * 60 * 60 * 1000).getDate() - ticket.time_in.getDate()
-  // console.log(typeof day)
+    const day = new Date(Date.now() + 7 * 60 * 60 * 1000).getDate() - ticket.time_in.getDate()
+    // console.log(typeof day)
 
-  const unit_price = ticket.vehicle_type == 'xe may' ? 5000 : 3000
+    const unit_price = ticket.vehicle_type == 'xe may' ? 5000 : 3000
 
-  const price = (day + 1) * unit_price
+    const price = (day + 1) * unit_price
 
-  const revenue = new Revenue({
-    revenue: price,
-    ticket_type: "ngay",
-    vehicle_type: ticket.vehicle_type
-  })
-  await revenue.save()
+    const revenue = new Revenue({
+      revenue: price,
+      ticket_type: "ngay",
+      vehicle_type: ticket.vehicle_type
+    })
+    await revenue.save()
 
-  res.send(revenue);
+    res.send(revenue);
+  }
+  else if (ticket.ticket_type == 'thang') {
+    let expiry_date = ticket.due_date - new Date()
+
+    if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
+
+    ticket.used = false
+
+    // const expiry_date = ticket.due_date.getDate() - new Date().getDate()
+
+    expiry_date = new Date(expiry_date).getDate()
+    await ticket.save()
+
+    res.send({ ticket: ticket, expiry_date: expiry_date });
+  }
+
 });
 
 router.put('/monthly_in/:IDs', async (req, res) => {
@@ -118,7 +135,7 @@ router.put('/monthly_in/:IDs', async (req, res) => {
   expiry_date = new Date(expiry_date).getDate()
   console.log(expiry_date)
 
-  res.json({ ticket: ticket, expiry_date: expiry_date });
+  res.send({ ticket: ticket, expiry_date: expiry_date });
 });
 
 router.put('/monthly_out/:IDs', async (req, res) => {
@@ -139,7 +156,7 @@ router.put('/monthly_out/:IDs', async (req, res) => {
   console.log(expiry_date)
   await ticket.save()
 
-  res.json({ ticket: ticket, expiry_date: expiry_date });
+  res.send({ ticket: ticket, expiry_date: expiry_date });
 });
 
 // gia hạn vé tháng
@@ -148,18 +165,39 @@ router.put('/renewal/:IDs', async (req, res) => {
 
   if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
 
-  ticket.due_date = +new Date(ticket.due_date) + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
+  if (req.body.renewal) {
+    ticket.due_date = +new Date(ticket.due_date) + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
+  
+    await ticket.save()
 
-  await ticket.save()
+    const price = ticket.vehicle_type === 'xe may' ? 150000 : 50000
 
-  res.send(ticket)
+    const revenue = new Revenue({
+      revenue: price,
+      ticket_type: "thang",
+      vehicle_type: ticket.vehicle_type
+    })
+
+    await revenue.save()
+  
+    res.send(ticket)
+  }
+  else {
+    ticket.ticket_type = 'ngay'
+    ticket.license_plate = '0'
+
+    await ticket.save()
+
+    res.send(ticket)
+  }
+
 })
 
 
 // tạo vé tháng: kiểm tra IDs nếu vé ngày đang được sử dụng thì báo lỗi, nếu IDs đó là vé tháng thì báo lỗi, 
 // IDs đúng khi used=false và ticket_type == ngày
-router.put('/create_monthly_ticket', async (req, res) => {
-  const { error } = validateMonthTicket(req.body);
+router.put('/create_monthly_ticket/:IDs', async (req, res) => {
+  const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   let ticket = await Ticket.findOne({ IDs: req.body.IDs })
