@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
 
-  let ticket = new Ticket(_.pick(req.body, ['license_plate', 'ticket_type', 'vehicle_type']));
+  let ticket = new Ticket(_.pick(req.body, ['license_plate', 'ticket_type', 'vehicle_type', 'IDs']));
 
   ticket = await ticket.save();
 
@@ -54,23 +54,25 @@ router.put('/in', auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let ticket = await Ticket.findOne({ used: false, ticket_type: 'ngay' })
-  if (!ticket) return res.status(400).send('Out of ticket')
+  let ticket = await Ticket.findOne({ IDs: req.body.IDs })
+  if (!ticket) return res.status(400).send('IDs is not found')
+
 
   ticket.license_plate = req.body.license_plate,
     ticket.time_in = Date.now() + 7 * 60 * 60 * 1000,
     ticket.vehicle_type = req.body.vehicle_type,
     ticket.used = true
 
+  console.log(ticket)
   await ticket.save()
 
   res.send(ticket);
 });
 
-
-router.put('/out/:license_plate', auth, async (req, res) => {
-  const ticket = await Ticket.findOne({ license_plate: req.params.license_plate });
-
+// soát vé đầu ra vào cho vé ngày 
+router.put('/out/:IDs', auth, async (req, res) => {
+  const ticket = await Ticket.findOne({ IDs: req.params.IDs });
+   
   if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
 
   ticket.license_plate = "0"
@@ -103,7 +105,7 @@ router.put('/monthly_in/:IDs', async (req, res) => {
   if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
 
   if (ticket.used) return res.status(404).send('Vé đã được sử dụng')
-  
+
   let expiry_date = ticket.due_date - new Date()
 
   if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')

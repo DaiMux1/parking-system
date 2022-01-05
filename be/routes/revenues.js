@@ -38,21 +38,12 @@ router.get('/', async (req, res) => {
 
   month = req.query.month ? req.query.month - 1 : (new Date().getMonth())
   month = parseInt(month)
-  let year = req.query.year ? req.query.year : new Date().getFullYear()
+  let year = req.query.year ? parseInt(req.query.year) : new Date().getFullYear()
 
 
   let revenues = []
 
-  if (req.query.day && req.query.year) {
-    let day = parseInt(req.query.day)
-    let year = parseInt(req.query.year)
-    revenues = await Revenue.find({
-      time: {
-        $gte: new Date(year, month, day, 7),
-        $lt: new Date(year, month, day + 1, 7),
-      }
-    });
-  } else if (req.query.day) {
+  if (req.query.day) {
     let day = parseInt(req.query.day)
     revenues = await Revenue.find({
       time: {
@@ -78,7 +69,7 @@ router.get('/', async (req, res) => {
     else month_ticket += 1
   }
 
-  res.json({ revenue: revenue, month: month + 1, year: year, day_ticket: day_ticket, month_ticket: month_ticket });
+  res.send({ revenue: revenue, month: month + 1, year: year, day_ticket: day_ticket, month_ticket: month_ticket });
 });
 
 // thống kê số lượng vé tháng vé ngày
@@ -134,7 +125,5 @@ router.post('/', async (req, res) => {
   await revenue.save()
   res.send(revenue)
 })
-
-
 
 module.exports = router

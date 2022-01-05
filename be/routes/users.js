@@ -67,12 +67,14 @@ router.delete('/:id', async (req, res) => {
 
 // đăng xuất
 router.put('/logout/:timekeeping_id', auth, async (req, res) => {
+  console.log(1111)
   let user = await User.findById(req.user._id)
   user.isActive = false
   await user.save()
 
   let timekeeping = await Timekeeping.findById(req.params.timekeeping_id)
-  timekeeping.end_time = Date.now() + 7 * 60 * 60 * 1000,
+  timekeeping.end_time = +new Date() + 7 * 60 * 60 * 1000,
+  console.log(timekeeping.end_time)
 
   await timekeeping.save()
   res.send(user)

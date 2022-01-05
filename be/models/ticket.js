@@ -25,9 +25,7 @@ const ticketSchema = new mongoose.Schema({
   },
   IDs: {
     type: String,
-    required: function () {
-      return this.ticket_type === 'thang'
-    }
+    minlength: 6, 
   },
   due_date: {
     type: Date,
@@ -49,6 +47,7 @@ function validateTicket(ticket) {
   const schema = {
     license_plate: Joi.string().required(),
     vehicle_type: Joi.string().required(),
+    IDs: Joi.string().min(6).required()
   }
 
   return Joi.validate(ticket, schema)

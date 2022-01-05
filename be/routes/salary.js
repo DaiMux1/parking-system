@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
     time = time / 1000 / 60 / 60
     let salary = time * coefficients_salary
 
-    res.json({ salary: salary, time: time, month: month + 1 })
+    // return res.status(200).json({ salary: salary, time: time, month: month + 1 })
   }
 
   const users = await User.find();
@@ -46,12 +46,16 @@ router.get('/', async (req, res) => {
     .populate({
       path: 'user_id',
     })
+
+  // console.log(timekeepings)
   let result = []
-  for (const key in users) {
+  for (let key in users) {
     if (!users[key].isAdmin) {
       let user = users[key]
+      // console.log(users)
       result.push({ name: user.name, time: 0, salary: 0, coefficients_salary: user.coefficients_salary, month: parseInt(new Date().getMonth()) + 1, year: new Date().getFullYear() })
-      for (const ind_tk in timekeepings) {
+      for (let ind_tk in timekeepings) {
+        console.log(timekeepings[ind_tk].user_id)
         if (String(timekeepings[ind_tk].user_id._id) == String(user._id)) {
           if (new Date(result[result.length - 1].year, result[result.length - 1].month-1, 1, 7) <= timekeepings[ind_tk].start_time &&
           new Date(result[result.length - 1].year, result[result.length - 1].month-1, 30, 7) > timekeepings[ind_tk].start_time)
@@ -64,7 +68,7 @@ router.get('/', async (req, res) => {
   }
 
 
-  res.send(result)
+  return res.status(200).send(result)
 
   // res.send(timekeepings)
 })
