@@ -47,7 +47,6 @@ function validateTicket(ticket) {
   const schema = {
     license_plate: Joi.string().required(),
     vehicle_type: Joi.string().required(),
-    IDs: Joi.string().min(6).required()
   }
 
   return Joi.validate(ticket, schema)
@@ -57,7 +56,7 @@ function validateMonthTicket(ticket) {
   const schema = {
     license_plate: Joi.string().required(),
     vehicle_type: Joi.string().required(),
-    IDs: Joi.string().required(),
+    IDs: Joi.string().min(6).required(),
   }
   return Joi.validate(ticket, schema)
 }

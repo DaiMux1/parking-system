@@ -50,12 +50,12 @@ router.post('/', async (req, res) => {
 });
 
 // soát vé đầu vào cho vé ngày 
-router.put('/in', auth, async (req, res) => {
+router.put('/in/:IDs', auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let ticket = await Ticket.findOne({ IDs: req.body.IDs })
-  if (!ticket) return res.status(400).send('IDs is not found')
+  let ticket = await Ticket.findOne({ IDs: req.params.IDs })
+  if (!ticket) return res.status(404).send('IDs is not found')
 
 
   ticket.license_plate = req.body.license_plate,
@@ -72,8 +72,10 @@ router.put('/in', auth, async (req, res) => {
 // soát vé đầu ra vào cho vé ngày 
 router.put('/out/:IDs', auth, async (req, res) => {
   const ticket = await Ticket.findOne({ IDs: req.params.IDs });
-   
+
   if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
+
+  if (!ticket.used) return res.status(400).send('Ticket is not used')
 
   ticket.license_plate = "0"
   ticket.used = false
@@ -154,18 +156,20 @@ router.put('/renewal/:IDs', async (req, res) => {
 })
 
 
-
+// tạo vé tháng: kiểm tra IDs nếu vé ngày đang được sử dụng thì báo lỗi, nếu IDs đó là vé tháng thì báo lỗi, 
+// IDs đúng khi used=false và ticket_type == ngày
 router.put('/create_monthly_ticket', async (req, res) => {
   const { error } = validateMonthTicket(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let ticket = await Ticket.findOne({ used: false, ticket_type: 'ngay' })
-  if (!ticket) return res.status(400).send('Out of ticket')
+  let ticket = await Ticket.findOne({ IDs: req.body.IDs })
+  if (!ticket) return res.status(400).send('IDs is not found')
+
+  if (ticket.used || ticket.ticket_type == 'thang') return res.status(400).send('Ticket is used')
 
   ticket.license_plate = req.body.license_plate
   ticket.due_date = +new Date() + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
   ticket.vehicle_type = req.body.vehicle_type
-  ticket.IDs = req.body.IDs
   ticket.ticket_type = 'thang'
 
   await ticket.save()
