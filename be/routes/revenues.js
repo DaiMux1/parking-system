@@ -12,8 +12,8 @@ router.get('/', async (req, res) => {
     for (let month of [...Array(6).keys()]) {
       let firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 7)
       firstDate.setMonth(firstDate.getMonth() - month)
-      let endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 30, 7)
-      endDate.setMonth(firstDate.getMonth() - month)
+      let endDate = new Date(new Date().getFullYear(), new Date().getMonth()+1, 1, 7)
+      endDate.setMonth(endDate.getMonth() - month)
       let revenues = await Revenue.find({
         time: {
           $gte: firstDate,
@@ -32,12 +32,11 @@ router.get('/', async (req, res) => {
       result.push({ revenue: revenue, month: firstDate.getMonth() + 1, year: firstDate.getFullYear(), day_ticket: day_ticket, month_ticket: month_ticket })
     }
 
-    res.send(result)
+    return res.send(result)
 
   }
 
-  month = req.query.month ? req.query.month - 1 : (new Date().getMonth())
-  month = parseInt(month)
+  let month = req.query.month ? parseInt(req.query.month) - 1 : (new Date().getMonth())
   let year = req.query.year ? parseInt(req.query.year) : new Date().getFullYear()
 
 
@@ -55,8 +54,8 @@ router.get('/', async (req, res) => {
   else {
     revenues = await Revenue.find({
       time: {
-        $gte: new Date(new Date().getFullYear(), month, 1, 7),
-        $lt: new Date(new Date().getFullYear(), month, 30, 7),
+        $gte: new Date(year, month, 1, 7),
+        $lt: new Date(year, month+1, 1, 7),
       }
     });
   }
@@ -69,7 +68,7 @@ router.get('/', async (req, res) => {
     else month_ticket += 1
   }
 
-  res.send({ revenue: revenue, month: month + 1, year: year, day_ticket: day_ticket, month_ticket: month_ticket });
+  return res.send({ revenue: revenue, month: month + 1, year: year, day_ticket: day_ticket, month_ticket: month_ticket });
 });
 
 // thống kê số lượng vé tháng vé ngày
