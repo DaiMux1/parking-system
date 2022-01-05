@@ -111,7 +111,7 @@ router.put('/out/:IDs', auth, async (req, res) => {
 
     if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
-    ticket.used = true
+    ticket.used = false
     await ticket.save()
 
     expiry_date = new Date(expiry_date).getDate()
