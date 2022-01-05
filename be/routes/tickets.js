@@ -106,14 +106,13 @@ router.put('/out/:IDs', auth, async (req, res) => {
 
     if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
-    ticket.used = false
-
-    // const expiry_date = ticket.due_date.getDate() - new Date().getDate()
-
-    expiry_date = new Date(expiry_date).getDate()
+    ticket.used = true
     await ticket.save()
 
-    res.send({ ticket: ticket, expiry_date: expiry_date });
+    expiry_date = new Date(expiry_date).getDate()
+    // console.log(expiry_date)
+    ticket._doc.expiry_date = expiry_date
+    res.send(ticket);
   }
 
 });
