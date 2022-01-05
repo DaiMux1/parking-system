@@ -79,6 +79,7 @@ router.put('/out/:IDs', auth, async (req, res) => {
   if (!ticket.used) return res.status(400).send('Ticket is not used')
 
   if (ticket.ticket_type == 'ngay') {
+    let license_plate = ticket.license_plate
     ticket.license_plate = "0"
     ticket.used = false
 
@@ -99,7 +100,11 @@ router.put('/out/:IDs', auth, async (req, res) => {
     })
     await revenue.save()
 
-    res.send(revenue);
+    ticket._doc.time_out = new Date(Date.now() + 7 * 60 * 60 * 1000)
+    ticket._doc.revenue = revenue.revenue
+    ticket.license_plate = license_plate
+
+    res.send(ticket);
   }
   else if (ticket.ticket_type == 'thang') {
     let expiry_date = ticket.due_date - new Date()
@@ -112,6 +117,7 @@ router.put('/out/:IDs', auth, async (req, res) => {
     expiry_date = new Date(expiry_date).getDate()
     // console.log(expiry_date)
     ticket._doc.expiry_date = expiry_date
+    ticket._doc.time_out = new Date(Date.now() + 7 * 60 * 60 * 1000)
     res.send(ticket);
   }
 
