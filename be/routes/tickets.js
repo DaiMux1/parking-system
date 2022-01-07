@@ -7,6 +7,12 @@ const express = require('express');
 const router = express.Router();
 
 // lấy tất cả các vé
+router.get('/all', async (req, res) => {
+  const tickets = await Ticket.find({ used: true })
+  res.send(tickets);
+});
+
+// lấy các vé theo page
 router.get('/:page', async (req, res) => {
   let perPage = 2
   let page = req.params.page || 1
