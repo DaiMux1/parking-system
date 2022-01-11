@@ -219,7 +219,7 @@ router.put('/create_monthly_ticket/:IDs', async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let ticket = await Ticket.findOne({ IDs: req.body.IDs })
+  let ticket = await Ticket.findOne({ IDs: req.params.IDs })
   if (!ticket) return res.status(400).send('IDs is not found')
 
   if (ticket.used || ticket.ticket_type == 'thang') return res.status(400).send('Ticket is used')
