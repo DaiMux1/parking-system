@@ -14,7 +14,7 @@ router.get('/all', async (req, res) => {
 
 // lấy các vé theo page
 router.get('/:page', async (req, res) => {
-  let perPage = 2
+  let perPage = 10
   let page = req.params.page || 1
 
   const tickets = await Ticket
