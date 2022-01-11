@@ -93,11 +93,13 @@ router.get('/', async (req, res) => {
       // console.log(users)
       result.push({ name: user.name, time: 0, salary: 0, coefficients_salary: user.coefficients_salary, month: month , year: year })
       for (let ind_tk in timekeepings) {
-        // console.log(timekeepings[ind_tk].user_id)
-        if (String(timekeepings[ind_tk].user_id._id) == String(user._id)) {
-          if (new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 1, 7) <= timekeepings[ind_tk].start_time &&
-            new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 30, 7) > timekeepings[ind_tk].start_time)
-            result[result.length - 1].time += timekeepings[ind_tk].end_time - timekeepings[ind_tk].start_time
+        console.log(timekeepings[ind_tk])
+        if (timekeepings[ind_tk].user_id) {
+          if (String(timekeepings[ind_tk].user_id._id) == String(user._id)) {
+            if (new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 1, 7) <= timekeepings[ind_tk].start_time &&
+              new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 30, 7) > timekeepings[ind_tk].start_time)
+              result[result.length - 1].time += timekeepings[ind_tk].end_time - timekeepings[ind_tk].start_time
+          }
         }
       }
       result[result.length - 1].time = (result[result.length - 1].time / 1000 / 60 / 60).toFixed(2)
