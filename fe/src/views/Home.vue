@@ -1,5 +1,5 @@
 <template>
-  <div id="page-top">
+  <div  id="page-top">
     <div id="wrapper">
       <Dashboard/>
       <div id="content-wrapper" class="d-flex flex-column">
@@ -8,7 +8,6 @@
           <CurrentTicketTable :currentTickets="tickets"/>
         </div>
         <Footer/>
-
       </div>
     </div>
   </div>
@@ -20,7 +19,7 @@ import Dashboard from "@/components/Dashboard";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import CurrentTicketTable from "../components/CurrentTicketTable";
-import {mapActions, mapGetters} from "vuex"
+import {mapActions, mapState} from "vuex"
 
 export default {
   name: "Home",
@@ -31,15 +30,22 @@ export default {
     CurrentTicketTable
   },
   computed: {
-    ...mapGetters('ticket', ['tickets']),
-
+    ...mapState({
+      token: (state) => state.account.user.token,
+      tickets: (state) => state.ticket.tickets
+    }),
   },
   methods: {
-    ...mapActions('ticket', ['getTickets']),
-
+    ...mapActions('ticket', ['getALlTickets']),
+    isNotHaveToken: function () {
+      if (this.token === "") {
+        this.$router.push({name: "Login"})
+      }
+    }
   },
   mounted() {
-    this.getTickets()
+    this.isNotHaveToken()
+    this.getALlTickets(this.token)
   }
 }
 </script>

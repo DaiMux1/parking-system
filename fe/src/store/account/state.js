@@ -1,7 +1,12 @@
 export default function () {
     return {
         users: [],
-        user: {},
+        user: {
+            timekeeping_id: String,
+            token: "",
+            isAdmin: Boolean,
+            name: String
+        },
         salary: [],
     }
 }

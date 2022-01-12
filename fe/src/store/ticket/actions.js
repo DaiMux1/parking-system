@@ -1,10 +1,12 @@
 import axios from "axios";
-export function getTickets({ commit }) {
+
+export function getALlTickets({ commit }, token) {
     axios
-        .get("http://localhost:3000/api/tickets", {
+        .get("http://localhost:3000/api/tickets/all", {
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
+                "x-auth-token": token
             },
             data: {},
         })

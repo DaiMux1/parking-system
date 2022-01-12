@@ -5,7 +5,9 @@
       <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
           <NavBar/>
-          <AccountTable :users="users"/>
+          <AccountTable @openEditUser="showUserInfo" :users="users"/>
+          <EditUserInfo :token="token" />
+          <CreateAccount ref="createAccount" :token="token" />
         </div>
         <Footer/>
       </div>
@@ -18,6 +20,8 @@ import '@/assets/styles/sb-admin-2.min.css'
 import '@/assets/styles/dataTables.bootstrap4.css'
 import Dashboard from "@/components/Dashboard";
 import AccountTable from "@/components/AccountTable";
+import EditUserInfo from "@/components/EditUserInfo";
+import CreateAccount from "@/components/CreateAccount";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
 import {mapGetters, mapActions, mapState} from "vuex";
@@ -28,11 +32,9 @@ export default {
     Dashboard,
     AccountTable,
     Footer,
-    NavBar
-  },
-  data: function () {
-    return {
-    }
+    NavBar,
+    EditUserInfo,
+    CreateAccount
   },
   computed: {
     ...mapGetters("account", ['users']),
@@ -42,6 +44,10 @@ export default {
   },
   methods: {
     ...mapActions('account', ['getUsers']),
+    showUserInfo (user) {
+      this.showModal = true
+      this.userEdit=user
+    }
   },
   mounted() {
     this.getUsers(this.token)

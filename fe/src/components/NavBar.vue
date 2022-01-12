@@ -19,12 +19,12 @@
 
       <!-- Nav Item - user Information -->
       <li class="nav-item dropdown no-arrow">
-        <router-link :to="{name: 'Login'}" class="nav-link dropdown-toggle"  id="userDropdown" role="button"
+        <a v-on:click="logout" class="nav-link dropdown-toggle"  id="userDropdown" role="button"
                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <span class="mr-2 d-none d-lg-inline text-gray-600 small">Đăng xuất</span>
           <img class="img-profile rounded-circle"
                src="../assets/imgs/undraw_profile.svg">
-        </router-link>
+        </a>
       </li>
 
     </ul>
@@ -34,11 +34,42 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import {mapState} from "vuex";
+import axios from "axios";
 export default {
   name: "NavBar",
+  methods: {
+    async logout() {
+      try {
+        const res = await axios({
+          method: "PUT",
+          url: "http://localhost:3000/api/users/logout/" + this.timekeeping,
+          params: {
+
+          },
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            "x-auth-token": this.token,
+          },
+        });
+        if (res.data) {
+          this.revenue = res.data;
+          if (this.$route.name !== "Login") {
+           this.$router.push({name: "Login"})
+          }
+        }
+      } catch (err) {
+        alert(err);
+      }
+    }
+  },
   computed: {
-    ...mapGetters("ticket", ['vehicleNumber'])
+    ...mapState({
+      token: (state) => state.account.user.token,
+      timekeeping: (state) => state.account.user.timekeeping_id,
+      vehicleNumber: (state) => state.ticket.vehicleNumber
+    }),
   },
 }
 </script>

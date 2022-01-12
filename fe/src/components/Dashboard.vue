@@ -104,7 +104,7 @@
     </li>
     <li v-if="!isAdminPage" class="nav-item">
       <router-link
-        :to="{ name: 'CreateMonthlyTicket' }"
+        :to="{ name: 'ManageMonthTicket' }"
         class="nav-link collapsed"
         data-toggle="collapse"
         data-target="#collapseUtilities"
@@ -112,7 +112,7 @@
         aria-controls="collapseUtilities"
       >
         <i class="fa fa-plus-circle" aria-hidden="true"></i>
-        <span>Tạo vé tháng</span>
+        <span>Quản lý vé tháng</span>
       </router-link>
     </li>
     <!-- Divider -->
