@@ -8,12 +8,12 @@
           <div class="container-fluid">
             <!-- Page Heading -->
             <h1 class="h3 mb-2 text-gray-800">Soát vé đầu vào</h1>
-            <p class="mb-4"> Soát vé đầu vào trong trường hợp xe vào bãi sử dụng vé tháng</p>
+            <p class="mb-4"> Soát vé đầu vào trong trường hợp xe vào bãi sử dụng vé tháng, tạo vé ngày trong trường hợp không sử dụng vé tháng</p>
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4">
               <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Kiểm tra vé tháng</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Kiểm tra vé tháng, tạo vé ngày</h6>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -112,7 +112,7 @@ export default {
         expiry_date: "",
         ticket: {
           license_plate: "",
-          month: "",
+          type: "",
           IDs: "",
         }
       }
@@ -143,21 +143,18 @@ export default {
       try {
         const res = await axios({
           method: "PUT",
-          url: "http://localhost:3000/api/tickets/monthly_in/" + this.id,
-          data: {
-              vehicle_type: this.type,
-              license_plate: this.license_plate
-          },
+          url: "http://localhost:3000/api/tickets/in",
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
           },
+          data: {
+            license_plate: this.licensePlate,
+            vehicle_type: this.licensePlate
+          }
         });
         if (res.data) {
           this.ticketData = res.data
-          if(res.data.expiry_date) {
-            this.ticketData.expiry_date = res.data.expiry_date + " ngày"
-          }
         }
       } catch (err) {
         alert(err)
