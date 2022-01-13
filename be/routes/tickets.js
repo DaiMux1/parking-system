@@ -144,16 +144,14 @@ router.put('/monthly_in/:IDs', async (req, res) => {
 
   // if (ticket.used) return res.status(404).send('Vé đã được sử dụng')
 
-  let expiry_date = ticket.due_date - new Date()
+  let expiry_date = ticket.due_date - new Date();
 
   if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
   ticket.used = true
   await ticket.save()
 
-  expiry_date = new Date(expiry_date).getDate()
-  // console.log(expiry_date)
-  ticket._doc.expiry_date = expiry_date
+  ticket._doc.expiry_date = parseInt(expiry_date / (24*60*60*1000))
   res.send(ticket);
 });
 
@@ -171,11 +169,10 @@ router.put('/monthly_out/:IDs', async (req, res) => {
 
   // const expiry_date = ticket.due_date.getDate() - new Date().getDate()
 
-  expiry_date = new Date(expiry_date).getDate()
-  console.log(expiry_date)
-  await ticket.save()
+  await ticket.save();
+  ticket._doc.expiry_date = parseInt(expiry_date / (24*60*60*1000))
 
-  res.send({ ticket: ticket, expiry_date: expiry_date });
+  res.send(ticket);
 });
 
 // gia hạn vé tháng
@@ -186,7 +183,7 @@ router.put('/renewal/:IDs', async (req, res) => {
 
   if (req.body.renewal) {
     ticket.due_date = +new Date(ticket.due_date) + 7 * 60 * 60 * 1000 + 30 * 60 * 60 * 24 * 1000
-  
+
     await ticket.save()
 
     const price = ticket.vehicle_type === 'xe may' ? 150000 : 50000
@@ -198,7 +195,7 @@ router.put('/renewal/:IDs', async (req, res) => {
     })
 
     await revenue.save()
-  
+
     res.send(ticket)
   }
   else {
