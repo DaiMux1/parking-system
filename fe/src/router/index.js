@@ -26,12 +26,7 @@ const routes = [
         component: () =>
             import ( /* webpackChunkName: "about" */ "../views/Login.vue"),
     },
-    {
-        path: "/register",
-        name: "Register",
-        component: () =>
-            import ( /* webpackChunkName: "about" */ "../views/Register.vue"),
-    },
+
     {
         path: "/manage-account",
         name: "ManageAccount",
@@ -69,10 +64,10 @@ const routes = [
             import ( /* webpackChunkName: "about" */ "../views/user/ManageTicketOut"),
     },
     {
-        path: "/manage-ticket/create-monthly-ticket",
-        name: "CreateMonthlyTicket",
+        path: "/manage-ticket/manage-monthly-ticket",
+        name: "ManageMonthTicket",
         component: () =>
-            import ( /* webpackChunkName: "about" */ "../views/user/CreateMonthlyTicket"),
+            import ( /* webpackChunkName: "about" */ "../views/user/ManageMonthTicket"),
     },
 ];
 

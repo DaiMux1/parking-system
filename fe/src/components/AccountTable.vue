@@ -12,9 +12,9 @@
       <div class="card-header py-3">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
           <h6 class="m-0 font-weight-bold text-primary">Dữ liệu về tài khoản</h6>
-          <router-link :to="{name:'Register'}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+          <button v-on:click="createAccount" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
               class="fas fa-user-plus fa-sm text-white-50"></i> Tạo tài khoản nhân viên
-          </router-link>
+          </button>
         </div>
       </div>
       <div class="card-body">
@@ -58,7 +58,7 @@
                       <a v-on:click="salaryUser(user)" class="btn btn-info btn-circle" style="margin-right: 3%;">
                         <i class="fa fa-eye"></i>
                       </a>
-                      <a v-on:click="isEditUser=true" class="btn btn-success btn-circle" style="margin-right: 3%;">
+                      <a v-on:click="editUserInfo(user)" class="btn btn-success btn-circle" style="margin-right: 3%;">
                         <i class="fas fa-edit"></i>
                       </a>
                       <a v-on:click="deleteUser(user)" class="btn btn-danger btn-circle">
@@ -74,12 +74,15 @@
         </div>
       </div>
     </div>
+
+
   </div>
 </template>
 
 <script>
 import '@/assets/styles/sb-admin-2.min.css'
 import '@/assets/styles/dataTables.bootstrap4.css'
+import {EventBus} from '@/event-bus'
 import axios from "axios";
 import {mapState} from "vuex";
 
@@ -91,10 +94,12 @@ export default {
   data: function () {
     return {
       name,
-      isEditUser: false,
+      showModal: false,
     }
   },
+
   methods: {
+
     async deleteUser(user) {
       try {
         const res = await axios({
@@ -118,39 +123,14 @@ export default {
         alert(err.response.data.message)
       }
     },
-    // async editUserInfo() {
-    //   this.editUser=false
-    //   try {
-    //     const res = await axios({
-    //       method: "PUT",
-    //       url: "http://localhost:3000/api/users/" + this.user._id,
-    //       data: {
-    //         username: this.editUser.name,
-    //         email: this.editUser.username,
-    //         password: this.editUser.password,
-    //         phone_number: this.editUser.phone,
-    //         address: this.editUser.address,
-    //         coefficients_salary: this.editUser.coeSalary
-    //       },
-    //       headers: {
-    //         "Access-Control-Allow-Origin": "*",
-    //         "Content-Type": "application/json",
-    //         "x-auth-token": this.token
-    //       },
-    //     });
-    //     if (res.data) {
-    //       if (this.$route.name === "EditUser") {
-    //         alert("Chỉnh sửa thông tin thành công!!");
-    //         this.$router.push({name: "ManageAccount"})
-    //       }
-    //     }
-    //
-    //   } catch (err) {
-    //     alert(err.response.data)
-    //   }
-    // },
     salaryUser(user) {
       this.$router.push({name: 'Salary', params: {name: user.name}})
+    },
+    editUserInfo (user) {
+      EventBus.$emit('show-and-edit-user', user)
+    },
+    createAccount () {
+      EventBus.$emit('show-create-account', "Tạo tài khoản")
     }
   },
   computed: {

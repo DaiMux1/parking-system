@@ -18,33 +18,15 @@
               <div class="card-body">
                 <div class="table-responsive">
                   <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                    <div class="row" >
+                    <div class="row">
                       <div class="col-sm-12 col-md-6">
                         <div class="dataTables_filter text-left" id="dataTable_month"><label>
-                          <select v-model="selectOption"  aria-controls="dataTable" class="custom-select custom-select-sm w-50 form-control form-control-sm">
-                            <option value="date">Soát vé theo ngày </option>
-                            <option value="month">Soát vé theo tháng </option>
-                          </select>
-                          <input v-if="isSelectMonth" v-model="id"
+                          <input v-model="id"
                                  type="text"
                                  class="form-control form-control-sm"
                                  placeholder="ID"
                           >
-                          <a v-if="isSelectMonth" v-on:click="checkMonthlyTicket" class="btn btn-success btn-circle btn-sm"
-                             style="margin-left: 2%">
-                            <i class="fas fa-check"></i>
-                          </a>
-                          <input v-if="!isSelectMonth" v-model="licensePlate" style="margin-right: 1%"
-                                 type="text"
-                                 class="form-control form-control-sm"
-                                 placeholder="Biển số"
-                          >
-<!--                          <select v-if="!isSelectMonth" v-model="type"  aria-controls="dataTable" class="custom-select custom-select-sm w-25 form-control form-control-sm">-->
-<!--                            <option value="xe_dap">Xe đạp </option>-->
-<!--                            <option value="xe_may">Xe máy </option>-->
-<!--                          </select>-->
-
-                          <a v-if="!isSelectMonth" v-on:click="getRevenues" class="btn btn-success btn-circle btn-sm"
+                          <a v-on:click="getRevenues" class="btn btn-success btn-circle btn-sm"
                              style="margin-left: 2%">
                             <i class="fas fa-check"></i>
                           </a></label>
@@ -57,21 +39,26 @@
                         <table class="table table-bordered" id="dataTable">
                           <thead>
                           <tr>
-                            <th v-if="isSelectMonth">Mã vé</th>
-                            <th v-if="isSelectMonth">Loại xe</th>
-                            <th v-if="isSelectMonth">Biển số xe</th>
-                            <th v-if="isSelectMonth">Còn lại</th>
-                            <th v-else>Thành tiền</th>
+                            <th>Loại vé</th>
+                            <th>Thời gian vào</th>
+                            <th>Thời gian ra</th>
+                            <th>Loại xe</th>
+                            <th>Biển số xe</th>
+                            <th v-if="isTicketMonth">Còn lại</th>
+                            <th v-else>Thành tiền </th>
 
                           </tr>
                           </thead>
                           <tbody>
                           <tr>
-                            <td v-if="isSelectMonth">{{ticketData.ticket.IDs}}</td>
-                            <td v-else>{{money}}</td>
-                            <td v-if="isSelectMonth">{{ticketData.ticket.vehicle_type}}</td>
-                            <td v-if="isSelectMonth">{{ticketData.ticket.license_plate}}</td>
-                            <td v-if="isSelectMonth">{{ticketData.expiry_date}}</td>
+                            <td>{{ ticketData.ticket_type}}</td>
+                            <td> {{ticketData.time_in}}</td>
+                            <td>{{ ticketData.time_out}}</td>
+                            <td>{{ ticketData.vehicle_type }}</td>
+                            <td>{{ ticketData.license_plate }}</td>
+                            <td v-if="isTicketMonth">{{ ticketData.expiry_date }}</td>
+                            <td v-else>{{ ticketData.revenue }} VNĐ</td>
+
                           </tr>
                           </tbody>
                         </table>
@@ -100,77 +87,76 @@ import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
 import axios from "axios";
+import {mapActions, mapState} from "vuex";
 
 export default {
   name: "ManageTicketOut",
   data: function () {
     return {
-      licensePlate: "",
-      type: "xe_dap",
-      selectOption: "date",
       id: "",
-      money: "",
       ticketData: {
-        expiry_date: "",
-        ticket: {
-          license_plate: "",
-          type: "",
-          IDs: "",
-        }
+        time_out: "",
+        time_in: "",
+        license_plate: "",
+        vehicle_type: "",
+        ticket_type: "",
+        expiry_date: 0,
+        revenue: ""
       }
     }
   },
   methods: {
-    async checkMonthlyTicket() {
-      try {
-        const res = await axios({
-          method: "PUT",
-          url: "http://localhost:3000/api/tickets/monthly_out/" + this.id,
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-        });
-        if (res.data) {
-          this.ticketData = res.data
-          if(res.data.expiry_date) {
-            this.ticketData.expiry_date = res.data.expiry_date + " ngày"
-          }
-        }
-      } catch (err) {
-        alert("Vé đang được sử dụng")
-      }
-    },
+    ...mapActions('ticket', ['getAllTickets']),
     async getRevenues() {
       try {
         const res = await axios({
           method: "PUT",
-          url: "http://localhost:3000/api/tickets/out/" + this.licensePlate,
+          url: "http://localhost:3000/api/tickets/out/" + this.id,
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Content-Type": "application/json",
+            "x-auth-token": this.token,
           },
         });
         if (res.data) {
-          this.money = res.data
+          this.ticketData = res.data
         }
       } catch (err) {
         alert(err)
       }
     },
+    formatData() {
+      if(this.ticketData.ticket_type === "ngay") {
+        this.ticketData.ticket_type = "Vé ngày"
+      } else if (this.ticketData.ticket_type === "thang") {
+        this.ticketData.ticket_type = "Vé tháng"
+      }
+      if(this.ticketData.vehicle_type === "xe may") {
+        this.ticketData.vehicle_type = "Xe máy"
+      } else if (this.ticketData.vehicle_type === "xe dap") {
+        this.ticketData.vehicle_type = "Xe đạp"
+      }
+    },
     clearData() {
       if (this.isHasDataTicket) {
         this.ticketData = {}
+        this.getAllTickets()
         this.$router.go(this.$router.currentRoute)
       }
     }
   },
   computed: {
+    ...mapState({
+      token: (state) => state.account.user.token,
+    }),
     isHasDataTicket: function () {
-      return !(this.ticketData.ticket.license_plate === "")
+      if(this.ticketData.license_plate !== "") {
+        this.formatData()
+      }
+      return !(this.ticketData.license_plate === "")
     },
-    isSelectMonth: function (){
-      return this.selectOption ==="month"
+    isTicketMonth: function () {
+      return this.ticketData.expiry_date === 0
     },
 
   },

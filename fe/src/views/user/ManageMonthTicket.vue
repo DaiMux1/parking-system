@@ -6,37 +6,27 @@
         <div id="content">
           <NavBar/>
           <div class="container-fluid">
-
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Tạo vé tháng</h1>
+            <h1 class="h3 mb-2 text-gray-800">Quản lý vé tháng</h1>
             <p class="mb-4">Tạo vé tháng cho người có nhu cầu sử dụng bãi xe</p>
 
             <!-- DataTales Example -->
             <div class="card shadow mb-4 mx-auto">
-              <div class="card-header py-3 mx-auto">
-                <h6 class="m-0 font-weight-bold text-primary ">Nhập các thông tin vào mẫu bên dưới</h6>
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary ">Tạo hoặc gia hạn vé tháng</h6>
               </div>
-              <div class="card-body w-25 mx-auto">
-                    <form class="user" @submit.prevent="createMonthlyTicket" id="register-form">
-                      <div class="form-group">
-                        <input v-model="monTicket.id" type="text" class="form-control form-control-user" id="name"
-                               placeholder="Mã vé">
-                      </div>
-                      <div class="form-group">
-                        <input v-model="monTicket.licensePlate" type="text" class="form-control form-control-user" id="email"
-                               placeholder="Biển số">
-                      </div>
-                      <div class="form-group">
-                        <input v-model="monTicket.type" type="text" class="form-control form-control-user" id="phone"
-                               placeholder="Loại xe">
-                      </div>
-                      <button class="btn btn-primary btn-user btn-block">
-                        Đăng ký vé tháng
-                      </button>
-                    </form>
+              <div class="card-body w-100 d-sm-flex justify-content-between">
+                <button  v-on:click="createMonthTicket" class="d-none d-sm-inline-block btn btn-lg btn-primary shadow-sm"><i
+                    class="fas fa-user-plus fa-sm text-white-50"></i> Tạo vé tháng
+                </button>
+                <button v-on:click="updateMonthTicket" class="d-none d-sm-inline-block btn btn-lg btn-primary shadow-sm"><i
+                    class="fas fa-user-plus fa-sm text-white-50"></i> Gia hạn vé tháng
+                </button>
               </div>
             </div>
           </div>
+          <CreateMonthTicket ref="createMonthTicket" :token="token"/>
+          <UpdateMonthTicket ref="updateMonthTicket" :token="token"/>
         </div>
         <Footer/>
       </div>
@@ -50,51 +40,34 @@ import '@/assets/styles/dataTables.bootstrap4.css'
 import Dashboard from "@/components/Dashboard";
 import Footer from "@/components/Footer";
 import NavBar from "@/components/NavBar";
-import axios from "axios";
-
+import CreateMonthTicket from "@/components/CreateMonthTicket";
+import UpdateMonthTicket from "@/components/UpdateMonthTicket";
+import {mapState} from "vuex";
 export default {
-  name: "CreateMonthlyTicket",
-  data: function() {
+  name: "ManageMonthTicket",
+  data: function () {
     return {
-      monTicket: {
-        id: "",
-        licensePlate: "",
-        type: ""
-      }
     }
   },
   methods: {
-    async createMonthlyTicket() {
-      try {
-        const res = await axios({
-          method: "PUT",
-          url: "http://localhost:3000/api/tickets/create_monthly_ticket",
-          data: {
-            license_plate: this.monTicket.licensePlate,
-            vehicle_type: this.monTicket.type,
-            IDs: this.monTicket.id,
-          },
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res.data) {
-          if (this.$route.name === "CreateMonthlyTicket") {
-            alert("Tạo vé tháng thành công !!");
-            this.$router.push({name: 'ManageTicketIn'})
-          }
-        }
-      } catch (err) {
-        alert(err.response.data.message)
-      }
+    createMonthTicket: function() {
+      this.$refs.createMonthTicket.showPopup()
     },
+    updateMonthTicket: function() {
+      this.$refs.updateMonthTicket.showPopupModal()
+    }
+  },
+  computed: {
+    ...mapState({
+      token: (state) => state.account.user.token
+    })
   },
   components: {
     Dashboard,
     Footer,
-    NavBar
+    NavBar,
+    CreateMonthTicket,
+    UpdateMonthTicket
   }
 }
 </script>
