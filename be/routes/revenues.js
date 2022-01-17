@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
     for (let month of [...Array(6).keys()]) {
       let firstDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1, 7)
       firstDate.setMonth(firstDate.getMonth() - month)
-      let endDate = new Date(new Date().getFullYear(), new Date().getMonth()+1, 1, 7)
+      let endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1, 7)
       endDate.setMonth(endDate.getMonth() - month)
       let revenues = await Revenue.find({
         time: {
@@ -39,7 +39,7 @@ router.get('/', async (req, res) => {
   let month = req.query.month ? parseInt(req.query.month) - 1 : (new Date().getMonth())
   let year = req.query.year ? parseInt(req.query.year) : new Date().getFullYear()
 
-
+  if (new Date(year, month) > new Date()) return res.status(400).send(`Hiện tại mới chỉ là tháng ${new Date().getMonth() + 1}`)
   let revenues = []
 
   if (req.query.day) {
@@ -55,7 +55,7 @@ router.get('/', async (req, res) => {
     revenues = await Revenue.find({
       time: {
         $gte: new Date(year, month, 1, 7),
-        $lt: new Date(year, month+1, 1, 7),
+        $lt: new Date(year, month + 1, 1, 7),
       }
     });
   }
@@ -77,13 +77,17 @@ router.get('/statistic', async (req, res) => {
   //   return res.status(400).send('No day, month')
   // }
 
-  let month = req.query.month ? req.query.month - 1 : (new Date().getMonth())
-  month = parseInt(month)
-  let year = req.query.year ? req.query.year : (new Date().getFullYear())
-  year = parseInt(year)
+  let month = req.query.month ? parseInt(req.query.month) - 1 : (new Date().getMonth())
+  let year = req.query.year ? parseInt(req.query.year) : (new Date().getFullYear())
   let day = req.query.day ? parseInt(req.query.day) : null
 
   if (day) {
+    if (new Date(year, month, day) > new Date()) {
+      console.log(new Date(year, month, day));
+      console.log(new Date());
+
+      return res.status(400).send(`Hiện tại mới chỉ là ngay ${new Date().getDate()}`)
+    }
     revenues = await Revenue.find({
       time: {
         $gte: new Date(year, month, day, 7),
@@ -92,6 +96,7 @@ router.get('/statistic', async (req, res) => {
     });
   }
   else {
+    if (new Date(year, month) > new Date()) return res.status(400).send(`Hiện tại mới chỉ là tháng ${new Date().getMonth() + 1}`)
     revenues = await Revenue.find({
       time: {
         $gte: new Date(year, month, 1, 7),
@@ -107,7 +112,7 @@ router.get('/statistic', async (req, res) => {
     else month_ticket += 1
   }
 
-  res.json({ day_ticket: day_ticket, month_ticket: month_ticket, day: day, month: month+1, year: year })
+  res.json({ day_ticket: day_ticket, month_ticket: month_ticket, day: day, month: month + 1, year: year })
 })
 
 

@@ -3,6 +3,7 @@ const { Salary } = require('../models/salary')
 const { Timekeeping } = require('../models/timekeeping');
 const { User } = require('../models/user');
 const { search } = require('./tickets');
+const payroll = require('./utils/payroll');
 const router = express.Router()
 
 router.get('/', async (req, res) => {
@@ -10,6 +11,13 @@ router.get('/', async (req, res) => {
   // nếu có tháng thì lấy tháng, nếu ko thì lấy tháng hiện tại
   let year = req.query.year ? parseInt(req.query.year) : 2021
   let month = req.query.month ? parseInt(req.query.month) : 12
+
+  // nếu ngày tháng vượt quá ngày hiện tại
+  if (new Date(year, month - 1 ) > new Date()) {
+    console.log(new Date(year, month - 1));
+    console.log(new Date());
+    return res.status(400).send(`Hiện tại mới chỉ là tháng ${new Date().getMonth() + 1}`)
+  } 
 
   // nếu query theo tên, 
   if (req.query.name) {
@@ -103,10 +111,10 @@ router.get('/', async (req, res) => {
       result[result.length - 1].time = (result[result.length - 1].time / 1000 / 60 / 60).toFixed(2)
       result[result.length - 1].salary = (result[result.length - 1].time * user.coefficients_salary).toFixed(2)
       // lưu vào db, ko phải là tháng hiện tại thì mới lưu
-      if (searchMonth < nowMonth) {
-        salary = new Salary(result[result.length - 1])
-        await salary.save()
-      }
+      // if (searchMonth < nowMonth) {
+      //   salary = new Salary(result[result.length - 1])
+      //   await salary.save()
+      // }
 
     }
   }
