@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 
   // nếu có tháng thì lấy tháng, nếu ko thì lấy tháng hiện tại
   let year = req.query.year ? parseInt(req.query.year) : 2021
-  let month = req.query.month ? parseInt(req.query.month)  : 12
+  let month = req.query.month ? parseInt(req.query.month) : 12
 
   // nếu query theo tên, 
   if (req.query.name) {
@@ -65,40 +65,38 @@ router.get('/', async (req, res) => {
 
 
   console.log(month, year)
-  console.log()
 
   let salary = await Salary.find({ month: month, year: year })
   // console.log(salary)
   // Nếu tìm thấy trong bảng salary đã tính rồi thì trả về kết quả luôn
   if (salary.length != 0) {
     return res.send(salary)
-  } 
+  }
 
   const users = await User.find();
 
   const timekeepings = await Timekeeping
     .find()
+    .and([{ start_time: { $gte: new Date(year, month - 1, 1, 7) } }, { end_time: { $lte: new Date(year, month, 1, 7) } }])
     .populate({
       path: 'user_id',
     })
 
-  // console.log(timekeepings)
+  console.log((timekeepings.length))
   let nowMonth = new Date(new Date().getFullYear(), new Date().getMonth())
-  let searchMonth = new Date(year, month-1)
+  let searchMonth = new Date(year, month - 1)
 
   let result = []
   for (let key in users) {
     if (!users[key].isAdmin) {
       let user = users[key]
       // console.log(users)
-      result.push({ name: user.name, time: 0, salary: 0, coefficients_salary: user.coefficients_salary, month: month , year: year })
+      result.push({ name: user.name, time: 0, salary: 0, coefficients_salary: user.coefficients_salary, month: month, year: year })
       for (let ind_tk in timekeepings) {
-        console.log(timekeepings[ind_tk])
+        // console.log(timekeepings[ind_tk])
         if (timekeepings[ind_tk].user_id) {
           if (String(timekeepings[ind_tk].user_id._id) == String(user._id)) {
-            if (new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 1, 7) <= timekeepings[ind_tk].start_time &&
-              new Date(result[result.length - 1].year, result[result.length - 1].month - 1, 30, 7) > timekeepings[ind_tk].start_time)
-              result[result.length - 1].time += timekeepings[ind_tk].end_time - timekeepings[ind_tk].start_time
+            result[result.length - 1].time += timekeepings[ind_tk].end_time - timekeepings[ind_tk].start_time
           }
         }
       }

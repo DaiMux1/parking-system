@@ -120,6 +120,13 @@ router.put('/out/:IDs', auth, async (req, res) => {
     res.send(ticket);
   }
   else if (ticket.ticket_type == 'thang') {
+    const revenue = new Revenue({
+      revenue: 0,
+      ticket_type: "thang",
+      vehicle_type: ticket.vehicle_type
+    })
+    await revenue.save()
+
     let expiry_date = ticket.due_date - new Date()
 
     if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
@@ -146,7 +153,7 @@ router.put('/monthly_in/:IDs', async (req, res) => {
 
   let expiry_date = ticket.due_date - new Date();
 
-  if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
+  if (expiry_date < 0) return res.status(400).send({message: 'Yêu cầu gia hạn'})
 
   ticket.used = true
   await ticket.save()
