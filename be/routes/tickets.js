@@ -70,6 +70,7 @@ router.put('/in/:IDs', auth, async (req, res) => {
   let ticket = await Ticket.findOne({ IDs: req.params.IDs })
   if (!ticket) return res.status(404).send('ID vé không hợp lệ')
 
+  if (ticket.ticket_type == 'thang') return res.status(400).send('Vé này là vé tháng')
   if (ticket.used) return res.status(400).send('Vé đã được sử dụng')
 
   ticket.license_plate = req.body.license_plate,
@@ -156,6 +157,7 @@ router.put('/monthly_in/:IDs', async (req, res) => {
   if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
   ticket.used = true
+  ticket.time_in = new Date(Date.now() + 7 * 60 * 60 * 1000)
   await ticket.save()
 
   ticket._doc.expiry_date = parseInt(expiry_date / (24*60*60*1000))
