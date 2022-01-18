@@ -122,7 +122,7 @@ export default {
           this.ticketData = res.data
         }
       } catch (err) {
-        alert(err)
+        alert(err.response.data)
       }
     },
     formatData() {

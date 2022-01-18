@@ -152,7 +152,7 @@ export default {
           }
         }
       } catch (err) {
-        alert(err);
+        alert(err.response.data);
       }
     },
     async getStatisticByMonth() {
@@ -182,7 +182,7 @@ export default {
           }
         }
       } catch (err) {
-        alert(err);
+        alert(err.response.data);
       }
     },
   },

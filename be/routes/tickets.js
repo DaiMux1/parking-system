@@ -68,9 +68,9 @@ router.put('/in/:IDs', auth, async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let ticket = await Ticket.findOne({ IDs: req.params.IDs })
-  if (!ticket) return res.status(404).send('IDs is not found')
+  if (!ticket) return res.status(404).send('ID vé không hợp lệ')
 
-  if (ticket.used) return res.status(400).send('Ticket is used')
+  if (ticket.used) return res.status(400).send('Vé đã được sử dụng')
 
   ticket.license_plate = req.body.license_plate,
     ticket.time_in = Date.now() + 7 * 60 * 60 * 1000,
@@ -87,9 +87,9 @@ router.put('/in/:IDs', auth, async (req, res) => {
 router.put('/out/:IDs', auth, async (req, res) => {
   const ticket = await Ticket.findOne({ IDs: req.params.IDs });
 
-  if (!ticket) return res.status(404).send('The ticket with the given ID was not found.');
+  if (!ticket) return res.status(404).send('ID vé không hợp lệ');
 
-  if (!ticket.used) return res.status(400).send('Ticket is not used')
+  if (!ticket.used) return res.status(400).send('Vé chưa soát vé đầu vào');
 
   if (ticket.ticket_type == 'ngay') {
     let license_plate = ticket.license_plate
@@ -147,13 +147,13 @@ router.put('/monthly_in/:IDs', async (req, res) => {
 
   let ticket = await Ticket.findOne({ IDs: req.params.IDs, ticket_type: "thang" });
 
-  if (!ticket) return res.status(404).send('The monthly ticket with the given IDs was not found.');
+  if (!ticket) return res.status(404).send('ID vé tháng không đúng');
 
   // if (ticket.used) return res.status(404).send('Vé đã được sử dụng')
 
   let expiry_date = ticket.due_date - new Date();
 
-  if (expiry_date < 0) return res.status(400).send({message: 'Yêu cầu gia hạn'})
+  if (expiry_date < 0) return res.status(400).send('Yêu cầu gia hạn')
 
   ticket.used = true
   await ticket.save()

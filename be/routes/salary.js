@@ -111,10 +111,10 @@ router.get('/', async (req, res) => {
       result[result.length - 1].time = (result[result.length - 1].time / 1000 / 60 / 60).toFixed(2)
       result[result.length - 1].salary = (result[result.length - 1].time * user.coefficients_salary).toFixed(2)
       // lưu vào db, ko phải là tháng hiện tại thì mới lưu
-      // if (searchMonth < nowMonth) {
-      //   salary = new Salary(result[result.length - 1])
-      //   await salary.save()
-      // }
+      if (searchMonth < nowMonth) {
+        salary = new Salary(result[result.length - 1])
+        await salary.save()
+      }
 
     }
   }

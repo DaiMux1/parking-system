@@ -108,5 +108,6 @@ export default {
   height: 100%;
   align-items: center;
   background-image: url("../assets/imgs/img-background.jpg");
+
 }
 </style>

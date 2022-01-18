@@ -18,6 +18,7 @@
               id="name-input"
               v-model="user.name"
           ></b-form-input>
+          <p class="text-left" v-if="!user.name.match(/^[A-Za-z]+$/)" style="color:red;">Tên chỉ chứa chữ cái</p>
         </b-form-group>
         <b-form-group
             label="Username"
@@ -27,6 +28,7 @@
               id="username-input"
               v-model="user.username"
           ></b-form-input>
+          <p class="text-left" v-if="user.username.length < 5" style="color:red;">Tên đăng nhập cần ít nhất 5 ký tự</p>
         </b-form-group>
         <b-form-group
             label="Mật khẩu"
@@ -36,6 +38,7 @@
               id="password-input"
               v-model="user.password"
           ></b-form-input>
+          <p class="text-left" v-if="user.password.length < 5" style="color:red;">Mật khẩu cần ít nhất 5 ký tự</p>
         </b-form-group>
         <b-form-group
             label="SĐT"
@@ -45,6 +48,7 @@
               id="phone-input"
               v-model="user.phone_number"
           ></b-form-input>
+          <p class="text-left" v-if="user.phone_number.length !== 10 || !user.phone_number.match(/^[0-9]+$/) " style="color:red;">Số điện thoại chỉ chứa số (bao gồm 10 chữ số)</p>
         </b-form-group>
         <b-form-group
             label="Địa chỉ"

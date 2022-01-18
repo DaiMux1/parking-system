@@ -33,7 +33,7 @@ router.post('/create', [auth, admin],  async (req, res) => {
   res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'username']))
 })
 
-// có thể gửi thông tin từ 4 trường, gửi cái nào cập nhật cái đó
+// có thể gửi thông tin từ nhiều trường, gửi cái nào cập nhật cái đó
 router.put('/:id', async (req, res) => {
   const user = await User.findById(req.params.id)
   if(!user) return res.status(400).send('The user with the given ID was not found.')

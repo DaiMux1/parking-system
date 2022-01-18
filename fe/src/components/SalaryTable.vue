@@ -60,7 +60,7 @@
                     <td>{{ user.name }}</td>
                     <td>{{ user.month }} / {{ user.year }}</td>
                     <td>{{ user.time }}</td>
-                    <td>20.000VND/h</td>
+                    <td>{{ user.coefficients_salary }}</td>
                     <td>{{ user.salary }}</td>
                   </tr>
                   </tbody>
@@ -118,7 +118,7 @@ export default {
           }
         }
       } catch (err) {
-        alert(err);
+        alert(err.response.data);
       }
     },
   },

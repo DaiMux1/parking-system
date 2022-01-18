@@ -158,7 +158,7 @@ export default {
           this.ticketIndex = page
         }
       } catch (err) {
-        alert(err)
+        alert(err.response.data);
       }
     }
   },
