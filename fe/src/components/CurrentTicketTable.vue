@@ -115,9 +115,9 @@ export default {
     tickets: function () {
       this.ticketsPage.forEach(ticket => {
             // eslint-disable-next-line no-constant-condition
-            ticket.vehicle_type = ticket.vehicle_type = 'xe may' ? 'Xe máy' : 'Xe đạp'
+            ticket.vehicle_type = ticket.vehicle_type === 'xe may' ? 'Xe máy' : 'Xe đạp'
             // eslint-disable-next-line no-constant-condition
-            ticket.ticket_type = ticket.ticket_type = 'ngay' ? 'Vé ngày' : 'Vé tháng'
+            ticket.ticket_type = ticket.ticket_type === 'ngay' ? 'Vé ngày' : 'Vé tháng'
           }
       )
 
@@ -158,7 +158,7 @@ export default {
           this.ticketIndex = page
         }
       } catch (err) {
-        alert(err)
+        alert(err.response.data);
       }
     }
   },

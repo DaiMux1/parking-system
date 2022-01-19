@@ -122,7 +122,7 @@ export default {
           this.ticketData = res.data
         }
       } catch (err) {
-        alert(err)
+        alert(err.response.data)
       }
     },
     formatData() {
@@ -156,7 +156,7 @@ export default {
       return !(this.ticketData.license_plate === "")
     },
     isTicketMonth: function () {
-      return this.ticketData.expiry_date === 0
+      return this.ticketData.expiry_date !== 0
     },
 
   },
