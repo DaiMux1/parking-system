@@ -177,8 +177,7 @@ export default {
           }
         }
       } catch (err) {
-        console.log(err);
-        alert(err.message);
+        alert(err.response.data);
       }
     },
     async createDayTicket() {
@@ -200,7 +199,7 @@ export default {
           this.ticketData = res.data;
         }
       } catch (err) {
-        alert(err);
+        alert(err.response.data);
       }
     },
     clearData() {

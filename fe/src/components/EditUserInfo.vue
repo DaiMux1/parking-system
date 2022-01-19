@@ -108,7 +108,7 @@ export default {
             }
           }
         } catch (err) {
-          alert(err)
+          alert(err.response.data);
         }
     },
 

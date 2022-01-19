@@ -14,7 +14,7 @@ export function getUsers({commit}, token) {
             commit("setUsers", response.data);
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
         });
 }
 export function getSalary({commit}, token) {
@@ -31,7 +31,7 @@ export function getSalary({commit}, token) {
             commit("setSalary", response.data);
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
         });
 }
 export function submitUser({ commit }, user) {

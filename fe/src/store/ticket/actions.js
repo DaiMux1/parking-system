@@ -15,7 +15,7 @@ export function getALlTickets({ commit }, token) {
             commit("setVehicleNumber", response.data.length)
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
         });
 }
 export function getRevenues({commit}) {
@@ -32,7 +32,7 @@ export function getRevenues({commit}) {
             commit("setRevenues", response.data);
         })
         .catch((error) => {
-            console.log(error);
+            console.log(error.response.data);
         });
 }
 
